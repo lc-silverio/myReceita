@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>myReceita - Login</title>
     <link rel="stylesheet" href="/css/backoffice.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class="navigation">
@@ -15,8 +16,33 @@
         </ul>
     </div>
 
+    <section class="parent">
+        <section class="child vertical-menu">
+            <div>       
+                <img src="/img/doctor2.svg" alt="">     
+                <p>Welcome</p>
+                <p class="doctor">Dr. John Smith Doe</p>
+            </div>
 
+            <div>
+                <button class="btn"><i class="fa fa-sign-out" aria-hidden="true"></i> Terminar Sessão</button>
+                <button class="btn"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Comunicar Erro</button>
+             </div>
+        </section>
 
+        <section class="child main-menu">
+            <section class="identification"></section>
+            <br>
+            <section class="medicine"></section>
+            <br>
+            <section class="commands">
+                <div>
+                    <button class="btn"><i class="fa fa-times" aria-hidden="true"></i> Limpar</button>
+                    <button class="btn"><i class="fa fa-check" aria-hidden="true"></i> Submeter</button>
+                 </div>
+            </section>
+        </section>
+    </section>
 
     <script src="/js/backoffice.js"></script>
 </body>
