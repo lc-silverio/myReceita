@@ -284,10 +284,17 @@ li::marker {
   font-size: 40px;
 }
 
+.contacts a{
+  color: inherit;
+}
+
 iframe{
   margin-left: 50px;
 }
 
+button{
+  cursor: pointer;
+}
 
 
 @media screen and (max-width: 1370px) {

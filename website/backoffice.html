@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>myReceita - Login</title>
+    <title>myReceita - Backoffice</title>
     <link rel="stylesheet" href="/css/backoffice.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -20,30 +20,124 @@
         <section class="child vertical-menu">
             <div>       
                 <img src="/img/doctor2.svg" alt="">     
-                <p>Welcome</p>
-                <p class="doctor">Dr. John Smith Doe</p>
+                <p>Saudações</p>
+                <p class="doctor">-name-</p>
             </div>
 
             <div>
+                <button class="btn"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><a href="mailto:suporte@myreceita.pt?subject=Erro myReceita"> Comunicar Erro</a></button>
                 <button class="btn"><i class="fa fa-sign-out" aria-hidden="true"></i> Terminar Sessão</button>
-                <button class="btn"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Comunicar Erro</button>
              </div>
         </section>
 
         <section class="child main-menu">
-            <section class="identification"></section>
-            <br>
-            <section class="medicine"></section>
-            <br>
-            <section class="commands">
-                <div>
-                    <button class="btn"><i class="fa fa-times" aria-hidden="true"></i> Limpar</button>
-                    <button class="btn"><i class="fa fa-check" aria-hidden="true"></i> Submeter</button>
-                 </div>
-            </section>
+
+            <div class="identification" id="wrapper">
+                <div class="container" id="left">
+                    <div class="patient-number">
+                        <i class="fa fa-address-card-o" aria-hidden="true"></i>
+                        <input type="number" name="id-paciente" id="id-paciente" placeholder="ID de Paciente" class="input">
+                        <button class="validar">Validar</button>
+                    </div>
+
+                    <div class="patient-name">
+                        <i class="fa fa-id-card-o" aria-hidden="true"></i>
+                        <input type="text" name="nome-paciente" id="nome-paciente" placeholder="Nome de Paciente" class="input"> 
+                    </div>
+                </div>
+
+                <div id="right">
+                    <div class="receita-number">
+                        Receita nº: <strong><span>-number-</span></strong>
+                    </div>
+                    <div class="emissao">
+                        Data de emissão: <strong><span>-data-</span></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="medicine">
+                <table id="table" style="width:100%">
+                    <tr>
+                        <th>Medicamento</th>
+                        <th>Dosagem</th>
+                        <th>Forma</th>
+                        <th>Qtd</th>
+                        <th>Posologia</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select class="data" name="medicamento-dropdown" id="medicamento-dropdown">
+                                <option value=""></option>
+                                <option value="Paracetamol">Paracetamol</option>
+                                <option value="Mebocaina">Mebocaina</option>
+                            </select>
+                        </td>
+                
+                        <td>
+                            <select class="data" name="dosagem-dropdown" id="dosagem-dropdown">
+                                <option value=""></option>
+                                <option value="500mg">500mg</option>
+                                <option value="1000mg">1000mg</option>
+                            </select>
+                        </td>
+                
+                        <td>
+                            <select class="data" name="forma-dropdown" id="forma-dropdown">
+                                <option value=""></option>
+                                <option value="Capsula">Capsula</option>
+                                <option value="Comprimido">Comprimido</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input class="data" type="number" name="quantidade-value" id="quantidade-value">
+                        </td>
+                        <td>
+                            <input class="data" type="text" name="posologia-text" id="posologia-text">
+                        </td>
+
+                        <td>
+                            <img id="clear" onclick="limparLinha(this)" src="/img/delete.svg" alt="Apagar linha">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="add"><button id="adicionar" class="adicionar" onclick="addNewLine()"><i class="fa fa-plus" aria-hidden="true"></i> Adiconar </button></td>
+                    </tr>
+                    
+                </table>
+
+                <div class="opcoes">
+                    <span class="validade">
+                        <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
+                        Validade: <input type="date" name="validade-data" id="validade-data">
+                    </span>
+                    
+                    <span class="autoriza-opcao">
+                        <input type="checkbox" name="autoriza-opcao" id="autoriza-opcao">
+                        Autoriza Opção
+                    </span>
+
+                    <span class="renovacao">
+                        <input type="checkbox" name="auto-renov" id="auto-renov" onclick="showCalendar()">
+                        Renovação Automática
+                    </span>
+
+                    <span class="data-renovacao" id="data-renovacao">
+                        <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                        Renovação: <input type="date" name="data-renova" id="data-renova">
+                    </span> 
+                </div>
+            </div>
+
+            <div class="commands">
+                <button class="btn" onclick="clearInput()"><i class="fa fa-times" aria-hidden="true"></i> Limpar tudo</button>
+                <button class="btn"><i class="fa fa-check" aria-hidden="true"></i> Submeter</button>
+            </div>
         </section>
     </section>
 
     <script src="/js/backoffice.js"></script>
 </body>
 </html>
+
