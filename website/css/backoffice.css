@@ -331,6 +331,7 @@ select:focus{
 
 .opcoes{
   margin-top: 50px;
+  font-weight: 600;
 }
 
 #quantidade-value{
