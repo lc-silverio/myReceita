@@ -57,16 +57,19 @@ function addNewLine(){
     var cell6 = row.insertCell(5);
 
     cell1.innerHTML = `<select class="data" name="medicamento-dropdown" id="medicamento-dropdown">
+        <option value=""></option>
         <option value="Paracetamol">Paracetamol</option>
         <option value="Mebocaina">Mebocaina</option>
         </select>`;/*Medicamento*/
 
     cell2.innerHTML = `<select class="data" name="dosagem-dropdown" id="dosagem-dropdown">
+        <option value=""></option>
         <option value="500mg">500mg</option>
         <option value="1000mg">1000mg</option>
         </select>`;/*Dosagem*/
 
     cell3.innerHTML = `<select class="data" name="forma-dropdown" id="forma-dropdown">
+        <option value=""></option>
         <option value="Capsula">Capsula</option>
         <option value="Comprimido">Comprimido</option>
         </select>`;/*Forma*/
