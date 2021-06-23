@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>myReceita - Backoffice</title>
-    <link rel="stylesheet" href="/css/backoffice.css">
+    <link rel="stylesheet" href="/css/backoffice-farm.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class="navigation">
         <a href="index.html"><img src="/img/logo.svg" alt="logotipo myReceita"></a>
         <ul class="nav-list">
-            <li class="list-item"><h2>myReceita - Área de Gestão Médica </h2></li>
+            <li class="list-item"><h2>myReceita - Área de Gestão Farmacêutica </h2></li>
         </ul>
     </div>
 
@@ -48,10 +48,10 @@
 
                 <div id="right">
                     <div class="receita-number">
-                        Receita nº: <strong><span>-number-</span></strong>
+                        Receita nº: <strong><span id="receita-number">-number-</span></strong>
                     </div>
                     <div class="emissao">
-                        Data de emissão: <strong><span>-data-</span></strong>
+                        Data de emissão: <strong><span id="emissao">-data-</span></strong>
                     </div>
                 </div>
             </div>
@@ -64,69 +64,37 @@
                         <th>Forma</th>
                         <th>Qtd</th>
                         <th>Posologia</th>
-                        <th></th>
                     </tr>
                     <tr>
                         <td>
-                            <select class="data" name="medicamento-dropdown" id="medicamento-dropdown">
-                                <option value=""></option>
-                                <option value="Paracetamol">Paracetamol</option>
-                                <option value="Mebocaina">Mebocaina</option>
-                            </select>
+                            <span class="data" name="medicamento-dropdown" id="medicamento-dropdown">-med-</span>
                         </td>
                 
                         <td>
-                            <select class="data" name="dosagem-dropdown" id="dosagem-dropdown">
-                                <option value=""></option>
-                                <option value="500mg">500mg</option>
-                                <option value="1000mg">1000mg</option>
-                            </select>
+                            <span class="data" name="dosagem-dropdown" id="dosagem-dropdown">-dose-</span>
                         </td>
                 
                         <td>
-                            <select class="data" name="forma-dropdown" id="forma-dropdown">
-                                <option value=""></option>
-                                <option value="Capsula">Capsula</option>
-                                <option value="Comprimido">Comprimido</option>
-                            </select>
+                            <span class="data" name="forma-dropdown" id="forma-dropdown">-forma-</span>
                         </td>
                         <td>
-                            <input class="data" type="number" name="quantidade-value" id="quantidade-value">
+                            <span class="data" type="number" name="quantidade-value" id="quantidade-value">-qtd-</span>
                         </td>
                         <td>
-                            <input class="data" type="text" name="posologia-text" id="posologia-text">
+                            <span class="data" type="text" name="posologia-text" id="posologia-text">-posologia-</span>
                         </td>
-
-                        <td>
-                            <img id="clear" onclick="limparLinha(this)" src="/img/delete.svg" alt="Apagar linha">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="add"><button id="adicionar" class="adicionar" onclick="addNewLine()"><i class="fa fa-plus" aria-hidden="true"></i> Adiconar </button></td>
-                    </tr>
-                    
+                    </tr>                   
                 </table>
 
                 <div class="opcoes">
                     <span class="validade">
                         <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
-                        Validade: <input type="date" name="validade-data" id="validade-data">
-                    </span>
-                    
-                    <span class="autoriza-opcao">
-                        <input type="checkbox" name="autoriza-opcao" id="autoriza-opcao">
-                        Autoriza Opção
+                        Validade: <span id="validade">-validade-</span>
                     </span>
 
                     <span class="renovacao">
-                        <input type="checkbox" name="auto-renov" id="auto-renov" onclick="showCalendar()">
-                        Renovação Automática
+                        Renovação Automática <span id="renovacao">-renovacao-</span>
                     </span>
-
-                    <span class="data-renovacao" id="data-renovacao">
-                        <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
-                        Renovação: <input type="date" name="data-renova" id="data-renova">
-                    </span> 
                 </div>
             </div>
 
