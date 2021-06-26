@@ -1,11 +1,12 @@
 function showCalendar(){
     var checkBox = document.getElementById("auto-renov");
-    var calendar = document.getElementById("data-renovacao");
+    var calendar = document.getElementById("validade");
 
     if (checkBox.checked == true){
-    calendar.style.display = "inline";
-    } else {
     calendar.style.display = "none";
+    clearData();
+    } else {
+    calendar.style.display = "inline";
     }
 }
 
@@ -93,3 +94,11 @@ function limparLinha(r){
   }
 }
 
+function clearData(){
+  var elements = document.getElementsByTagName("input");/*Limpa inputs texto, numero e data*/
+  for (var ii=0; ii < elements.length; ii++) {
+    if (elements[ii].type == "date") {
+      elements[ii].value = "";
+    }
+  }
+}

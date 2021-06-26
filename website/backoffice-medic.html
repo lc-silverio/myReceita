@@ -108,13 +108,13 @@
                 </table>
 
                 <div class="opcoes">
-                    <span class="validade">
+                    <span class="validade" id="validade">
                         <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
                         Validade: <input type="date" name="validade-data" id="validade-data">
                     </span>
                     
                     <span class="renovacao">
-                        <input type="checkbox" name="auto-renov" id="auto-renov">
+                        <input type="checkbox" name="auto-renov" id="auto-renov" onclick="showCalendar()">
                         Renovação Automática
                     </span>
 
