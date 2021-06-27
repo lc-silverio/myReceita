@@ -36,7 +36,7 @@
                 <div class="container" id="left">
                     <div class="patient-number">
                         <i class="fa fa-address-card-o" aria-hidden="true"></i>
-                        <input type="number" name="id-paciente" id="id-paciente" placeholder="ID de Paciente" class="input">
+                        <input type="number" name="id-paciente" id="id-paciente" placeholder="Cartão de Utente" class="input">
                         <button class="validar">Validar</button>
                     </div>
 
@@ -47,12 +47,18 @@
                 </div>
 
                 <div id="right">
-                    <div class="receita-number">
+
+                    <span class="renovacao">
+                        <input type="checkbox" name="auto-renov" id="auto-renov" onclick="showCalendar()">
+                        Renovação Automática
+                    </span>
+
+                    <!--<div class="receita-number">
                         Receita nº: <strong><span>-number-</span></strong>
                     </div>
                     <div class="emissao">
                         Data de emissão: <strong><span>-data-</span></strong>
-                    </div>
+                    </div>-->
                 </div>
             </div>
 
@@ -64,6 +70,7 @@
                         <th>Forma</th>
                         <th>Qtd</th>
                         <th>Posologia</th>
+                        <th>Toma diária</th>
                         <th></th>
                     </tr>
                     <tr>
@@ -82,7 +89,7 @@
                                 <option value="1000mg">1000mg</option>
                             </select>
                         </td>
-                
+
                         <td>
                             <select class="data" name="forma-dropdown" id="forma-dropdown">
                                 <option value=""></option>
@@ -90,11 +97,17 @@
                                 <option value="Comprimido">Comprimido</option>
                             </select>
                         </td>
+
                         <td>
                             <input class="data" type="number" name="quantidade-value" id="quantidade-value">
                         </td>
+                        
                         <td>
                             <input class="data" type="text" name="posologia-text" id="posologia-text">
+                        </td>
+
+                        <td>
+                            <input class="data" type="number" name="quantidade-diaria" id="quantidade-diaria">
                         </td>
 
                         <td>
@@ -108,16 +121,11 @@
                 </table>
 
                 <div class="opcoes">
-                    <span class="validade" id="validade">
+                   <!-- <span class="validade" id="validade">
                         <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
                         Validade: <input type="date" name="validade-data" id="validade-data">
-                    </span>
+                    </span>-->
                     
-                    <span class="renovacao">
-                        <input type="checkbox" name="auto-renov" id="auto-renov" onclick="showCalendar()">
-                        Renovação Automática
-                    </span>
-
                     <span class="data-renovacao" id="data-renovacao">
                         <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                         Renovação: <input type="date" name="data-renova" id="data-renova">

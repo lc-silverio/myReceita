@@ -285,8 +285,8 @@ tr {
 }
 
 select{
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   border-radius: 5px;
 }
 
@@ -300,7 +300,7 @@ select:focus{
 }
 
 #posologia-text{
-  width: 300px;
+  width: 250px;
   height: 50px;
 }
 
@@ -358,4 +358,8 @@ a{
 
 input, select{
   cursor: pointer;
+}
+
+input#quantidade-diaria{
+  width: 50px;
 }

@@ -42,16 +42,21 @@
 
                     <div class="patient-name">
                         <i class="fa fa-id-card-o" aria-hidden="true"></i>
-                        <input readonly type="text" name="nome-paciente" id="nome-paciente" placeholder="-nomedepaciente-" class="input"> 
+                        <input readonly type="text" name="cartaoutente" id="cartaoutente" placeholder="-cartaoutente-" class="input"> 
                     </div>
                 </div>
 
                 <div id="right">
                     <div class="receita-number">
-                        Receita nº: <strong><span id="receita-number">-number-</span></strong>
+                        <span class="validade">
+                            <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
+                            Validade: <strong><span id="validade">-validade-</span></strong>
+                        </span>
                     </div>
                     <div class="emissao">
-                        Data de emissão: <strong><span id="emissao">-data-</span></strong>
+                        <span class="renovacao">
+                            Renovação Automática <strong><span id="renovacao">-renovacao-</span></strong>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -64,6 +69,7 @@
                         <th>Forma</th>
                         <th>Qtd</th>
                         <th>Posologia</th>
+                        <th>Levantado</th>
                     </tr>
                     <tr>
                         <td>
@@ -83,19 +89,12 @@
                         <td>
                             <span class="data" type="text" name="posologia-text" id="posologia-text">-posologia-</span>
                         </td>
+                        <td>
+                            <input type="checkbox" name="levantado" id="levantado">
+                        </td>
                     </tr>                   
                 </table>
 
-                <div class="opcoes">
-                    <span class="validade">
-                        <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
-                        Validade: <span id="validade">-validade-</span>
-                    </span>
-
-                    <span class="renovacao">
-                        Renovação Automática <span id="renovacao">-renovacao-</span>
-                    </span>
-                </div>
             </div>
 
             <div class="commands">
