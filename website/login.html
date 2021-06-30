@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,22 +8,48 @@
     <title>myReceita - Login</title>
     <link rel="stylesheet" href="/css/login.css">
 </head>
+
 <body>
     <div class="navigation">
         <a href="index.html"><img src="/img/logo.svg" alt="logotipo myReceita"></a>
         <ul class="nav-list">
-            <li class="list-item"><h2>myReceita - Área de Gestão Médica </h2></li>
+            <li class="list-item">
+                <h2>myReceita - Área de Gestão Médica </h2>
+            </li>
         </ul>
     </div>
 
     <section class="login-box">
         <p class="login-logo"><img src="/img/logo.svg" alt=""></p>
 
-        <p><input class="input-box" type="text" name="id-medico" id="id-medico" placeholder="ID Médico"></p>
+        <p><input class="input-box" type="number" name="cedulaProfissional" id="cedulaProfissional" placeholder="Cédula Profissional"></p>
 
-        <p><input class="input-box"  type="password" name="password" id="password" placeholder="Palavra-passe"></p>
+        <p><input class="input-box" type="password" name="password" id="password" placeholder="Palavra-passe"></p>
 
-        <p><input class="login-btn" type="button" value="Autenticar"></p>
+        <p><input class="login-btn" type="button" value="Autenticar" onclick="login()"></p>
+
+        <script>
+            function login() {
+                fetch('/loginFuncionario', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cedulaProfissional: document.getElementById("cedulaProfissional").value,
+                        password: document.getElementById("password").value
+                    })
+                }).then(async (resposta) => {
+                    const X = await resposta.json();
+                    if (X.mensagem == "if") {
+                        window.location = "backoffice-medic.html"
+                    } else {
+                        window.location = "backoffice-farm.html"
+                    }
+                });
+            }
+        </script>
     </section>
 </body>
+
 </html>
