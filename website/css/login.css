@@ -155,5 +155,6 @@ section{
 
 .login-btn:hover{
     background-color: #00aeff;
+    cursor: pointer;
 }
 

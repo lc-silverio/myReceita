@@ -8,7 +8,12 @@ const app = express();
 const PORTA = 3000;
 
 
+//Luis
 app.use(express.static('../website'))
+app.use(express.urlencoded());
+
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
 
 //
 //
@@ -227,27 +232,38 @@ app.post('/receita', jsonParser, (req, res) => {
 app.post('/loginFuncionario', (req, res) => {
 
   const newFuncionario = {
-      cedulaProfissional: req.query.cedulaProfissional,
-      password: req.query.password,
+      cedulaProfissional: req.body.cedulaProfissional,
+      password: req.body.password,
   }
 
 
   
-  async function autenticar(){
-    try{
+  async function autenticar() {
+    try {
       let conn = await pool.getConnection();
-      const selecionar = "SELECT cedulaProfissional FROM funcionario WHERE cedulaProfissional = "+ newFuncionario.cedulaProfissional + " AND pass = '" + newFuncionario.password + "';";
+      const selecionar = "SELECT cedulaProfissional FROM funcionario WHERE cedulaProfissional = " + newFuncionario.cedulaProfissional + " AND pass = '" + newFuncionario.password + "';";
       let rows = await conn.query(selecionar);
       console.log("Select Executado.");
-      if(rows[0] != null){
+      if (rows[0] != null) {
         console.log("Conta autenticada.");
+
+        const funcao = "SELECT funcao FROM funcionario WHERE cedulaProfissional =" + newFuncionario.cedulaProfissional + ";";
+        let rows1 = await conn.query(funcao);
+        //console.log(rows1[0].funcao)
+
+        if (rows1[0].funcao == "M") {
+          res.send({ mensagem: "if" })
+        } else {
+          res.send({ mensagem: "else" })
+        }
+
         res.status(200).send();
-      }else{
+      } else {
         console.log("Cedula Profissional ou Palavra Passe incorreta.");
         console.log("ERRO X");
         res.status(400).send();
       }
-    }catch(err){
+    } catch (err) {
       console.log("Cedula Profissional ou Palavra Passe incorreta.");
       console.log("ERRO Y");
       res.status(400).send();
