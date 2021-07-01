@@ -7,13 +7,21 @@ var jsonParser = bodyParser.json();
 //
 const app = express();
 const PORTA = 3000;
+
+
+app.use(express.static('../website'))
+
 //
 //
 //Usamos para realizar a connexao à BD cada vez que existe uma comunicação rest
 const pool = mariadb.createPool({
   host: 'localhost', 
   user:'root', 
+<<<<<<< HEAD
   password: 'admin',
+=======
+  password: 'deoxis',
+>>>>>>> parent of 2a155f1... Login
   database: 'myreceita'
 });
 //
@@ -222,39 +230,29 @@ app.post('/receita', jsonParser, (req, res) => {
 //
 // Login Medicos & Farmaceuticos
 app.post('/loginFuncionario', (req, res) => {
-  console.log(req.body);
 
   const newFuncionario = {
-    cedulaProfissional: req.body.cedulaProfissional,
-    password: req.body.password,
+      cedulaProfissional: req.query.cedulaProfissional,
+      password: req.query.password,
   }
 
-  async function autenticar() {
-    try {
+
+  
+  async function autenticar(){
+    try{
       let conn = await pool.getConnection();
-      const selecionar = "SELECT cedulaProfissional FROM funcionario WHERE cedulaProfissional = " + newFuncionario.cedulaProfissional + " AND pass = '" + newFuncionario.password + "';";
+      const selecionar = "SELECT cedulaProfissional FROM funcionario WHERE cedulaProfissional = "+ newFuncionario.cedulaProfissional + " AND pass = '" + newFuncionario.password + "';";
       let rows = await conn.query(selecionar);
       console.log("Select Executado.");
-      if (rows[0] != null) {
+      if(rows[0] != null){
         console.log("Conta autenticada.");
-
-        const funcao = "SELECT funcao FROM funcionario WHERE cedulaProfissional =" + newFuncionario.cedulaProfissional + ";";
-        let rows1 = await conn.query(funcao);
-        //console.log(rows1[0].funcao)
-
-        if (rows1[0].funcao == "M") {
-          res.send({ mensagem: "if" })
-        } else {
-          res.send({ mensagem: "else" })
-        }
-
         res.status(200).send();
-      } else {
+      }else{
         console.log("Cedula Profissional ou Palavra Passe incorreta.");
         console.log("ERRO X");
         res.status(400).send();
       }
-    } catch (err) {
+    }catch(err){
       console.log("Cedula Profissional ou Palavra Passe incorreta.");
       console.log("ERRO Y");
       res.status(400).send();
@@ -262,7 +260,7 @@ app.post('/loginFuncionario', (req, res) => {
   }
 
   autenticar();
-
+  
 });
 //
 //
