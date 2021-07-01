@@ -252,21 +252,21 @@ app.post('/loginFuncionario', (req, res) => {
         //console.log(rows1[0].funcao)
 
         if (rows1[0].funcao == "M") {
-          res.send({ mensagem: "if" })
+          res.send({ mensagem: "medic" })
         } else {
-          res.send({ mensagem: "else" })
+          res.send({ mensagem: "farm" })
         }
 
         res.status(200).send();
       } else {
         console.log("Cedula Profissional ou Palavra Passe incorreta.");
-        console.log("ERRO X");
-        res.status(400).send();
+        console.log("ERRO Cedula");
+        res.send({ mensagem: "erro" })
       }
     } catch (err) {
       console.log("Cedula Profissional ou Palavra Passe incorreta.");
-      console.log("ERRO Y");
-      res.status(400).send();
+      console.log("ERRO Pass");
+      res.send({ mensagem: "erro" })
     }
   }
 

@@ -58,7 +58,7 @@ body{
 .navigation a:hover{
   color: #0073A7;
   font-weight: 500;
-  text-decoration: underline 0.15em #005074;
+  text-decoration: underline 0.15em #00aeff;
   transition: text-decoration-color 1500ms;
   text-underline-offset: 3px;
 }
@@ -147,8 +147,8 @@ body{
 
 .video button{
   background-color: white;
-  color: #0073A7;
-  border:#0073A7;
+  color: var(--primary-color);
+  border:var(--primary-color);
   width: 242px;
   height: 44px;
   text-align: center;
@@ -160,14 +160,18 @@ body{
   font-weight: 500;
 }
 
-.video,.hero button:hover{
+.video button:hover{
   background-color: #005074;
+  transition: background-color 500ms
+}
+.hero button:hover{
+  background-color: #00aeff;
   transition: background-color 500ms
 }
 
 .video, button:hover{
   color: white;
-  border: #005074;
+  border: white;
 }
 
 .video img{

@@ -102,3 +102,37 @@ function clearData(){
     }
   }
 }
+
+function login() {
+  fetch('/loginFuncionario', {
+      method: 'POST',
+      headers: {
+          'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+          cedulaProfissional: document.getElementById("cedulaProfissional").value,
+          password: document.getElementById("password").value
+      })
+  }).then(async (resposta) => {
+      const X = await resposta.json();
+      if (X.mensagem == "medic") {
+          window.location = "backoffice-medic.html"
+      } else if (X.mensagem== "farm") {
+          window.location = "backoffice-farm.html"
+      }else if (X.mensagem == "erro"){
+        window.alert("Cédula Profissional ou palavra-passe incorreta. Por favor tente novamente.")
+      }
+  });
+
+}
+
+function verificarLogin(){
+  var identificacao = document.getElementById("cedulaProfissional").value;
+  var pass = document.getElementById("password").value;
+
+  if (identificacao == ""|| pass == ""){
+    window.alert("Cédula Profissional ou palavra-passe incorreta. Por favor tente novamente.")
+  }else{
+    login()
+  }
+}

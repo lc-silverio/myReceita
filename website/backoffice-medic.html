@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,19 +8,24 @@
     <title>myReceita - Backoffice</title>
     <link rel="stylesheet" href="/css/backoffice-medic.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="icon" type="image/png" href="./img/favicon.png" />
 </head>
+
 <body>
     <div class="navigation">
         <a href="index.html"><img src="/img/logo.svg" alt="logotipo myReceita"></a>
         <ul class="nav-list">
-            <li class="list-item"><h2>myReceita - Área de Gestão Médica </h2></li>
+            <li class="list-item">
+                <h2>myReceita - Área de Gestão Médica </h2>
+            </li>
         </ul>
     </div>
 
     <section class="parent">
         <section class="child vertical-menu">
-            <div>       
-                <img src="/img/doctor2.svg" alt="">     
+            <div>
+                <img src="/img/doctor2.svg" alt="">
                 <p>Saudações</p>
                 <p class="doctor">-name-</p>
             </div>
@@ -27,7 +33,7 @@
             <div>
                 <button class="btn"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><a href="mailto:suporte@myreceita.pt?subject=Erro myReceita"> Comunicar Erro</a></button>
                 <button class="btn"><i class="fa fa-sign-out" aria-hidden="true"></i> Terminar Sessão</button>
-             </div>
+            </div>
         </section>
 
         <section class="child main-menu">
@@ -42,7 +48,7 @@
 
                     <div class="patient-name">
                         <i class="fa fa-id-card-o" aria-hidden="true"></i>
-                        <input readonly type="text" name="nome-paciente" id="nome-paciente" placeholder="-nomedepaciente-" class="input"> 
+                        <input readonly type="text" name="nome-paciente" id="nome-paciente" placeholder="-nomedepaciente-" class="input">
                     </div>
                 </div>
 
@@ -81,7 +87,7 @@
                                 <option value="Mebocaina">Mebocaina</option>
                             </select>
                         </td>
-                
+
                         <td>
                             <select class="data" name="dosagem-dropdown" id="dosagem-dropdown">
                                 <option value=""></option>
@@ -101,7 +107,7 @@
                         <td>
                             <input class="data" type="number" name="quantidade-value" id="quantidade-value">
                         </td>
-                        
+
                         <td>
                             <input class="data" type="text" name="posologia-text" id="posologia-text">
                         </td>
@@ -117,19 +123,19 @@
                     <tr>
                         <td class="add"><button id="adicionar" class="adicionar" onclick="addNewLine()"><i class="fa fa-plus" aria-hidden="true"></i> Adiconar </button></td>
                     </tr>
-                    
+
                 </table>
 
                 <div class="opcoes">
-                   <!-- <span class="validade" id="validade">
+                    <!-- <span class="validade" id="validade">
                         <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
                         Validade: <input type="date" name="validade-data" id="validade-data">
                     </span>-->
-                    
+
                     <span class="data-renovacao" id="data-renovacao">
                         <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                         Renovação: <input type="date" name="data-renova" id="data-renova">
-                    </span> 
+                    </span>
                 </div>
             </div>
 
@@ -142,5 +148,5 @@
 
     <script src="/js/backoffice.js"></script>
 </body>
-</html>
 
+</html>
