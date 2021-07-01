@@ -1,7 +1,6 @@
 const express = require("express");
 const mariadb = require('mariadb');
 const bodyParser = require('body-parser');
-const nodemon = require('nodemon');
 var jsonParser = bodyParser.json();
 //
 //
@@ -17,11 +16,7 @@ app.use(express.static('../website'))
 const pool = mariadb.createPool({
   host: 'localhost', 
   user:'root', 
-<<<<<<< HEAD
   password: 'admin',
-=======
-  password: 'deoxis',
->>>>>>> parent of 2a155f1... Login
   database: 'myreceita'
 });
 //
