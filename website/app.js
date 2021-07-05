@@ -322,6 +322,9 @@ app.post('/verificarPaciente', jsonParser, (req, res) => {
 
 
 
+
+
+
 // Devolver nome, dosagem e forma farmaceutica de todos os medicamentos. No html separar cada id do json por '!!' e colocar numa lista.
 app.post('/medicamentos', jsonParser, (req, res) => {
 
@@ -330,7 +333,7 @@ app.post('/medicamentos', jsonParser, (req, res) => {
       let conn = await pool.getConnection();
       const selecionar = "SELECT nome, dosagem, formaFarmaceutica FROM medicamento;";
       let rows = await conn.query(selecionar);
-      console.log("Select Executado.");
+      console.log("Medicamentos: Select all Executado.");
 
       let nomeString = "";
       let dosagemString = "";
@@ -340,10 +343,13 @@ app.post('/medicamentos', jsonParser, (req, res) => {
         dosagemString += rows[i].dosagem + "!!";
         formaFarmaceuticaString += rows[i].formaFarmaceutica + "!!";
       }
-      res.json({ 'status': '200', nome: nomeString, dosagem: dosagemString, nome: formaFarmaceuticaString });
+      /*console.log(nomeString)
+      console.log(dosagemString)
+      console.log(formaFarmaceuticaString)*/
+      res.json({ 'status': '200', nome: nomeString, dosagem: dosagemString, formaFarmaceutica: formaFarmaceuticaString });
 
     } catch (err) {
-      console.log("ERRO Y");
+      console.log("ERRO Medicamentos");
       res.status(400).send();
     }
   }
@@ -351,8 +357,12 @@ app.post('/medicamentos', jsonParser, (req, res) => {
   autenticar();
 
 });
-//
-//
+
+
+
+
+
+
 //------------------------------------------------------------->   MEDICOS
 //REGISTO DE UMA RECEITA
 app.post('/registarReceita', jsonParser, (req, res) => {

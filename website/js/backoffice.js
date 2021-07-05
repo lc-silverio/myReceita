@@ -1,6 +1,6 @@
 var cedula;
 
-function showCalendar() {
+/*function showCalendar() {
   var checkBox = document.getElementById("auto-renov");
   var calendar = document.getElementById("validade");
 
@@ -10,7 +10,7 @@ function showCalendar() {
   } else {
     calendar.style.display = "inline";
   }
-}
+}*/
 
 function resetDropdown() {
   var medicamentoDropdown = document.getElementById("medicamento-dropdown");
@@ -44,7 +44,7 @@ function clearInput() {
   }
 
   resetDropdown();
-  showCalendar();
+  /*showCalendar();*/
 }
 
 function addNewLine() {
@@ -170,9 +170,67 @@ function userFetch() {
 
     if (X.mensagem == "erro") {
       window.alert("Cartão de Utente não reconhecido. Por favor tente novamente.")
-    } else{
+    } else {
       document.getElementById("nome-paciente").value = X.nomeUtente;
     }
 
+  });
+}
+
+
+function medFetch() {
+  fetch('/medicamentos', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      medicamento: document.getElementById("medicamento-dropdown").value,
+      dosagem: document.getElementById("dosagem-dropdown").value,
+      forma: document.getElementById("forma-dropdown").value,
+    })
+  }).then(async (resposta) => {
+    const X = await resposta.json();
+    //console.log(X.nome.length);
+
+
+    //MEDICAMENTOS
+    var nomeString = X.nome.split("!!")
+    //console.log(nomeString)
+    nomeString.splice(nomeString.length - 1)
+
+    var sel = document.getElementById('medicamento-dropdown');
+    for (var i = 0; i < nomeString.length; i++) {
+      var opt = document.createElement('option');
+      opt.innerHTML = nomeString[i];
+      opt.value = nomeString[i];
+      sel.appendChild(opt);
+    }
+
+    //DOSAGEM
+    var dosagemString = X.dosagem.split("!!")
+    //console.log(dosagemString)
+    dosagemString.splice(dosagemString.length - 1)
+
+    var sel = document.getElementById('dosagem-dropdown');
+    for (var i = 0; i < dosagemString.length; i++) {
+      var opt = document.createElement('option');
+      opt.innerHTML = dosagemString[i] + "mg";
+      opt.value = dosagemString[i];
+      sel.appendChild(opt);
+    }
+
+    //DOSAGEM
+    var formaFarmaceuticaString = X.formaFarmaceutica.split("!!")
+    //console.log(formaFarmaceuticaString)
+    formaFarmaceuticaString.splice(formaFarmaceuticaString.length - 1)
+
+    var sel = document.getElementById('forma-dropdown');
+    for (var i = 0; i < formaFarmaceuticaString.length; i++) {
+      var opt = document.createElement('option');
+      opt.innerHTML = formaFarmaceuticaString[i];
+      opt.value = formaFarmaceuticaString[i];
+      sel.appendChild(opt);
+    }
   });
 }

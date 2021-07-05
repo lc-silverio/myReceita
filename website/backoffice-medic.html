@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" href="./img/favicon.png" />
 </head>
 
-<body>
+<body onload="medFetch()">
     <div class=" navigation">
         <a href="index.html"><img src="/img/logo.svg" alt="logotipo myReceita"></a>
         <ul class="nav-list">
@@ -54,7 +54,7 @@
                 <div id="right">
 
                     <span class="renovacao">
-                        <input type="checkbox" name="auto-renov" id="auto-renov" onclick="showCalendar()">
+                        <input type="checkbox" name="auto-renov" id="auto-renov">
                         Renovação Automática
                     </span>
 
@@ -82,24 +82,18 @@
                         <td>
                             <select class="data" name="medicamento-dropdown" id="medicamento-dropdown">
                                 <option value=""></option>
-                                <option value="Paracetamol">Paracetamol</option>
-                                <option value="Mebocaina">Mebocaina</option>
                             </select>
                         </td>
 
                         <td>
                             <select class="data" name="dosagem-dropdown" id="dosagem-dropdown">
                                 <option value=""></option>
-                                <option value="500mg">500mg</option>
-                                <option value="1000mg">1000mg</option>
                             </select>
                         </td>
 
                         <td>
                             <select class="data" name="forma-dropdown" id="forma-dropdown">
                                 <option value=""></option>
-                                <option value="Capsula">Capsula</option>
-                                <option value="Comprimido">Comprimido</option>
                             </select>
                         </td>
 
