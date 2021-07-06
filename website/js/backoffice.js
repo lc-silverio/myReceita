@@ -286,3 +286,8 @@ function medFetchMain() {
     }
   });
 }
+
+function logout(){
+  window.location = "index.html";
+
+}

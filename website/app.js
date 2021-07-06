@@ -310,22 +310,8 @@ app.post('/verificarPaciente', jsonParser, (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Devolver nome, dosagem e forma farmaceutica de todos os medicamentos. No html separar cada id do json por '!!' e colocar numa lista.
+//Lista medicamentos (dropdown)  - OK
+//Devolver nome, dosagem e forma farmaceutica de todos os medicamentos. No html separar cada id do json por '!!' e colocar numa lista.
 app.post('/medicamentos', jsonParser, (req, res) => {
 
   async function autenticar() {
