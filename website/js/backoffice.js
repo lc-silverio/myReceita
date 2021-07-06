@@ -73,7 +73,7 @@ function limparLinha(r) {//Função para eliminar uma linha da tabela da receita
   if (table.rows.length >= 4) {//Verifica o numero de linhas na tabela
     document.getElementById("table").deleteRow(i);//Apaga a linha selecionada
   } else {
-    clearInput();//Apaga os inputs da primeira linha
+    clearInput();//Apaga os inputs da primeira linha ... e do cartao de utente ... ups
     resetDropdown();//Faz reset ao dropdown da primeira linha
   }
 }
@@ -82,6 +82,10 @@ function limparLinha(r) {//Função para eliminar uma linha da tabela da receita
 
 function logout() { //Auto explicativa
   window.location = "index.html";
+  cedula = 0;
+  counter = 0;
+  bolacha = 0;
+  bolachinha = 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
