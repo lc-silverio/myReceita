@@ -1,9 +1,10 @@
+//VARIAVEIS GLOBAIS
 var cedula;
 var counter = 0;
 var bolacha;
 var bolachinha;
 
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 function resetDropdown() {//Faz reset aos dropdowns na tabela da receita
   var medicamentoDropdown = document.getElementById("medicamento-dropdown0");
@@ -29,16 +30,18 @@ function clearInput() {
 
   var table = document.getElementById("table");
 
-  while (table.rows.length >= 4) {
+  while (table.rows.length >= 4) {//Limpa linhas extra adicionadas à receita
     table.deleteRow(2);
   }
 
   resetDropdown();// Chama a função que faz reset à dropdown box
 }
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 function addNewLine() { //Adiciona nova linha à tabela da receita do médico - Associada ao botão "Adicionar Linha"
   counter++;
+
   var table = document.getElementById("table");
   var row = table.insertRow(2);
   var cell1 = row.insertCell(0);
@@ -47,13 +50,13 @@ function addNewLine() { //Adiciona nova linha à tabela da receita do médico - 
   var cell4 = row.insertCell(3);
   var cell5 = row.insertCell(4);
 
-  cell1.innerHTML = `<select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown${counter}">/*Medicamento*/
+  cell1.innerHTML = `<select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown${counter}">
         <option value=""></option>
-        </select>`;
+        </select>`;/*Medicamento*/
 
-  cell2.innerHTML = `<input class="data, quantidade-value" type="number" name="quantidade-value" id="quantidade-value${counter}">`;/*Qtd caixas*/
+  cell2.innerHTML = `<input class="data, quantidade-value" type="number" name="quantidade-value" id="quantidade-value${counter}">`;/*Quantidade de embalagens*/
 
-  cell3.innerHTML = `<input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria${counter}">`;/*Quantidade Diária a tomar*/
+  cell3.innerHTML = `<input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria${counter}">`;/*Quantidade Diária a tomar - usado no calculo de validades*/
 
   cell4.innerHTML = `<input class="data, posologia-text" type="text" name="posologia-text" id="posologia-text${counter}">`;/*Posologia*/
 
@@ -67,11 +70,11 @@ function addNewLine() { //Adiciona nova linha à tabela da receita do médico - 
 function limparLinha(r) {//Função para eliminar uma linha da tabela da receita do médico - Associada ao X em cada linha
   var i = r.parentNode.parentNode.rowIndex;
 
-  if (table.rows.length >= 4) {
-    document.getElementById("table").deleteRow(i);
+  if (table.rows.length >= 4) {//Verifica o numero de linhas na tabela
+    document.getElementById("table").deleteRow(i);//Apaga a linha selecionada
   } else {
-    clearInput();
-    resetDropdown();
+    clearInput();//Apaga os inputs da primeira linha
+    resetDropdown();//Faz reset ao dropdown da primeira linha
   }
 }
 
@@ -89,7 +92,7 @@ function logout() { //Auto explicativa
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
-function login() {
+function login() {//Login de funcionários
   cedula = document.getElementById("cedulaProfissional").value;
 
   fetch('/loginFuncionario', {
@@ -103,7 +106,8 @@ function login() {
     })
   }).then(async (resposta) => {
     const X = await resposta.json();
-    if (X.mensagem == "medic") {
+
+    if (X.mensagem == "medic") {//Verifica o tipo de função e envia para o backoffice respectivo ou apresenta erro
       window.location = "backoffice-medic.html"
     } else if (X.mensagem == "farm") {
       window.location = "backoffice-farm.html"
@@ -115,7 +119,7 @@ function login() {
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
-function verificarLogin() {
+function verificarLogin() { //Verifica se não há campos vazios no form de login
   var identificacao = document.getElementById("cedulaProfissional").value;
   var pass = document.getElementById("password").value;
 
@@ -130,7 +134,7 @@ function verificarLogin() {
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 
-function verificarUser() {
+function verificarUser() {//Verifica o cartao de utente fornecido para comfirmar se o campo está vazio
   var identificacao = document.getElementById("id-paciente").value;
 
   if (identificacao == "") {
@@ -142,7 +146,7 @@ function verificarUser() {
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
-function userFetch() {
+function userFetch() {//Verifica o cartão de utente fornecido, vai à BD confirmar se ele existe e devolve o nome do utente para criar a nova receita
 
   fetch('/verificarPaciente', {
     method: 'POST',
@@ -166,7 +170,7 @@ function userFetch() {
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
-function medFetch() {
+function medFetch() {//Executa onLoad e vai buscar a lista dos remédios à BD para colocar na primeira linha do dropdown
   fetch('/medicamentos', {
     method: 'POST',
     headers: {
@@ -196,7 +200,9 @@ function medFetch() {
   });
 }
 
-function medFetchMain() {
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+function medFetchMain() {//Executa ao clicar no "Adicionar Linha" e vai buscar a lista dos remédios à BD para colocar na dropdown
   fetch('/medicamentos', {
     method: 'POST',
     headers: {
@@ -228,7 +234,6 @@ function medFetchMain() {
   bolacha = document.cookie.split(" ");
   bolachinha = bolacha[1];
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
