@@ -364,7 +364,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
   const newReceita = {
     numeroDeUtente: req.query.numeroDeUtente,
     idMedico: req.query.idMedico,
-    idMedicamento: req.query.idMedicamento,
+    idMedicamento: req.query.idMedicamento, //ALTERAR NOME MEDICAMENTO
     posologia: req.query.posologia,
     renova: req.query.renova,
     forma: req.query.forma,
@@ -402,7 +402,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
       let duracaoMedicamentoArray = [];
       for (let i = 0; i < medicamentosArray.length; i++) {
-        const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE idMedicamento = " + medicamentosArray[i] + ";";
+        const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE nome = " + medicamentosArray[i] + ";";
         const rows1 = await conn.query(selecionar1);
         console.log("Select " + i + " Executado. Inicio Loop " + i + ".");
 
@@ -452,7 +452,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
 
       //Registar uma receita na base de dados
-      for (let i = 0; i < medicamentosArray.length; i++) {
+      for (let i = 0; i < medicamentosArray.length; i++) { //FAZER SELECT DO NOME COM O ARRAY MEDICAMENTOS
         console.log("Inicio Loop Inserir " + i + ".");
         const string = "INSERT INTO receita values (" + NULL + ", " + nReceita + ", " + newReceita.numeroDeUtente + ", " + newReceita.idMedico + ", " + medicamentosArray[i] + ", '" + posologiaArray[i] + "', " + dataEmissao + ", " + duracaoMedicamentoArray[i] + ", " + validadeReceitaArray[i] + ", " + 0 + ", 'f', '" + renovaArray[i] + "', " + quantidadeArray[i] + ")";
         console.log("Insert inicio.");

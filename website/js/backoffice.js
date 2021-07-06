@@ -1,6 +1,9 @@
 var cedula;
+var counter = 0;
 var bolacha;
 var bolachinha;
+console.log(counter)
+
 
 /*function showCalendar() {
   var checkBox = document.getElementById("auto-renov");
@@ -50,6 +53,8 @@ function clearInput() {
 }
 
 function addNewLine() {
+  counter++;
+  //console.log(counter);
   var table = document.getElementById("table");
   var row = table.insertRow(2);
   var cell1 = row.insertCell(0);
@@ -60,23 +65,23 @@ function addNewLine() {
   var cell6 = row.insertCell(5);
   var cell7 = row.insertCell(6);
 
-  cell1.innerHTML = `<select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown{counter}">
+  cell1.innerHTML = `<select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown${counter}">
         <option value=""></option>
         </select>`;/*Medicamento*/
 
-  cell2.innerHTML = `<select class="data, dosagem-dropdown" name="dosagem-dropdown" id="dosagem-dropdown{counter}">
+  cell2.innerHTML = `<select class="data, dosagem-dropdown" name="dosagem-dropdown" id="dosagem-dropdown${counter}">
         <option value=""></option>
         </select>`;/*Dosagem*/
 
-  cell3.innerHTML = `<select class="data, forma-dropdown" name="forma-dropdown" id="forma-dropdown{counter}">
+  cell3.innerHTML = `<select class="data, forma-dropdown" name="forma-dropdown" id="forma-dropdown${counter}">
         <option value=""></option>
         </select>`;/*Forma*/
 
-  cell4.innerHTML = `<input class="data, quantidade-value" type="number" name="quantidade-value" id="quantidade-value{counter}">`;/*Qtd*/
+  cell4.innerHTML = `<input class="data, quantidade-value" type="number" name="quantidade-value" id="quantidade-value${counter}">`;/*Qtd*/
 
-  cell5.innerHTML = `<input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria{counter}">`;/*Quantidade Diária*/
+  cell5.innerHTML = `<input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria${counter}">`;/*Quantidade Diária*/
 
-  cell6.innerHTML = `<input class="data, posologia-text" type="text" name="posologia-text" id="posologia-text{counter}">`;/*Posologia*/
+  cell6.innerHTML = `<input class="data, posologia-text" type="text" name="posologia-text" id="posologia-text${counter}">`;/*Posologia*/
 
   cell7.innerHTML = `<img id="clear" onclick="limparLinha(this)" src="/img/delete.svg" alt="Apagar linha">`;/*Limpar*/
 
@@ -202,7 +207,7 @@ function medFetch() {
     })
     //console.log(nomeStringClean)
 
-    var sel = document.getElementById(`medicamento-dropdown{counter}`);
+    var sel = document.getElementById(`medicamento-dropdown${counter}`);
     for (var i = 0; i < nomeStringClean.length; i++) {
       var opt = document.createElement('option');
       opt.innerHTML = nomeStringClean[i];
@@ -219,7 +224,7 @@ function medFetch() {
     })
     //console.log(dosagemStringClean)
 
-    var sel = document.getElementById(`dosagem-dropdown{counter}`);
+    var sel = document.getElementById(`dosagem-dropdown${counter}`);
     for (var i = 0; i < dosagemStringClean.length; i++) {
       var opt = document.createElement('option');
       opt.innerHTML = dosagemStringClean[i] + "mg";
@@ -236,7 +241,7 @@ function medFetch() {
     })
     //console.log(formaFarmaceuticaStringClean)
 
-    var sel = document.getElementById(`forma-dropdown{counter}`);
+    var sel = document.getElementById(`forma-dropdown${counter}`);
     for (var i = 0; i < formaFarmaceuticaStringClean.length; i++) {
       var opt = document.createElement('option');
       opt.innerHTML = formaFarmaceuticaStringClean[i];
@@ -319,15 +324,76 @@ function medFetchMain() {
 
   bolacha = document.cookie.split(" ")
   bolachinha = bolacha[1]
-  console.log(bolachinha)
+  //console.log(bolachinha)
 
 }
 
 function logout() {
   window.location = "index.html";
-
 }
 
-function teste(){
-  console.log(bolachinha)
+
+/*dosagemArray = []
+formaArray = []
+quantidadeArray = []
+tomaDiariaArray = []
+posologiaArray = []*/
+
+
+function registarReceita() {
+  var medicamentoString = "";
+  console.log("batata")
+  //cedula = document.getElementById("cedulaProfissional").value;
+  //idMedico = bolachinha.value;
+  //renova = document.getElementById("auto-renov").checked;
+
+  //idMedicamento = "" E agora ???????? 
+  console.log(counter)
+  //for (var r = -1; r <= counter; r++) {//um ciclo para cada uma das linhas adicionadas 0 = linha original
+  do{
+    medicamentoString = medicamentoString.concat(document.getElementById(`medicamento-dropdown${counter}`).value + "!!");
+    console.log(counter)
+    console.log(medicamentoString)
+    counter--
+    //console.log(document.getElementById(`medicamento-dropdown${counter}`).value)
+    /*dosagemArray.push(document.getElementById(`dosagem-dropdown${counter}`).value + "!!");
+    formaArray.push(document.getElementById(`forma-dropdown${counter}`).value + "!!");
+    quantidadeArray.push(document.getElementById(`quantidade-value${counter}`).value + "!!");
+    tomaDiariaArray.push(document.getElementById(`toma-diaria${counter}`).value + "!!");
+    posologiaArray.push(document.getElementById(`posologia-text${counter}`).value + "!!");*/
+  }while(counter != -1)
+
+  console.log(medicamentoString)
+  counter = 0;
+  clearInput();
+
+
+
+
+
+
+
+
+
+/*
+  fetch('/registarMedicamento', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      cedula = document.getElementById("cedulaProfissional").value,
+      idMedico = bolachinha.value,
+      //idMedicamento = "" E agora ???????? 
+      medicamentoNome = document.getElementById(`medicamento-dropdown${counter}`).value,
+      dosagem = document.getElementById(`dosagem-dropdown${counter}`).value,
+      forma = document.getElementById(`forma-dropdown${counter}`).value,
+      quantidade = document.getElementById(`quantidade-value${counter}`).value,
+      tomaDiaria = document.getElementById(`toma-diaria${counter}`).value,
+      posologia = document.getElementById(`posologia-text${counter}`).value,
+      renova = document.getElementById("auto-renov").checked,
+    })
+  }).then(async (resposta) => {
+
+  });*/
 }
