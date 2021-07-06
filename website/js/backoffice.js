@@ -1,14 +1,13 @@
 //VARIAVEIS GLOBAIS
-var cedula;
-var counter = 0;
-var bolacha;
-var bolachinha;
+var counter = 0; //Para as linhas da receita
+var bolacha; //Cookies
+var bolachinha; //Cookies
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 function resetDropdown() {//Faz reset aos dropdowns na tabela da receita
   var medicamentoDropdown = document.getElementById("medicamento-dropdown0");
-  medicamentoDropdown.selectedIndex = 0;
+  medicamentoDropdown.selectedIndex = 0; //Faz reset para o campo vazio do dropdown
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -30,7 +29,7 @@ function clearInput() {
 
   var table = document.getElementById("table");
 
-  while (table.rows.length >= 4) {//Limpa linhas extra adicionadas à receita
+  while (table.rows.length >= 4) {//Limpa linhas extra adicionadas à receita, ignora as primeira 4 que são de cabeçalho, botões e a linha original
     table.deleteRow(2);
   }
 
@@ -43,12 +42,13 @@ function addNewLine() { //Adiciona nova linha à tabela da receita do médico - 
   counter++;
 
   var table = document.getElementById("table");
-  var row = table.insertRow(2);
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4);
+  var row = table.insertRow(2); // nova linha
+
+  var cell1 = row.insertCell(0); //medicamento
+  var cell2 = row.insertCell(1); // quantidade embalagem
+  var cell3 = row.insertCell(2); // quantidade diaria
+  var cell4 = row.insertCell(3); // posologia
+  var cell5 = row.insertCell(4); // apagar
 
   cell1.innerHTML = `<select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown${counter}">
         <option value=""></option>
@@ -68,7 +68,7 @@ function addNewLine() { //Adiciona nova linha à tabela da receita do médico - 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 function limparLinha(r) {//Função para eliminar uma linha da tabela da receita do médico - Associada ao X em cada linha
-  var i = r.parentNode.parentNode.rowIndex;
+  var i = r.parentNode.parentNode.rowIndex; //vai buscar o indice das linhas para iterar no for
 
   if (table.rows.length >= 4) {//Verifica o numero de linhas na tabela
     document.getElementById("table").deleteRow(i);//Apaga a linha selecionada
@@ -82,7 +82,8 @@ function limparLinha(r) {//Função para eliminar uma linha da tabela da receita
 
 function logout() { //Auto explicativa
   window.location = "index.html";
-  cedula = 0;
+
+  //limpa as variáveis globais
   counter = 0;
   bolacha = 0;
   bolachinha = 0;
@@ -91,13 +92,13 @@ function logout() { //Auto explicativa
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 
-//                                      FIM DE FUNÇÕES GENÉRICAS DE FRONT-END
+//                                                      FIM DE FUNÇÕES DE FRONT-END
+//                                                        INICIO DE BACKEND CALLS
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 function login() {//Login de funcionários
-  cedula = document.getElementById("cedulaProfissional").value;
 
   fetch('/loginFuncionario', {
     method: 'POST',
@@ -112,9 +113,9 @@ function login() {//Login de funcionários
     const X = await resposta.json();
 
     if (X.mensagem == "medic") {//Verifica o tipo de função e envia para o backoffice respectivo ou apresenta erro
-      window.location = "backoffice-medic.html"
+      window.location = "backoffice-medic.html" //Backoffice medico
     } else if (X.mensagem == "farm") {
-      window.location = "backoffice-farm.html"
+      window.location = "backoffice-farm.html" //Backoffice farmamácia
     } else if (X.mensagem == "erro") {
       window.alert("Cédula Profissional ou palavra-passe incorreta. Por favor tente novamente.")
     }
