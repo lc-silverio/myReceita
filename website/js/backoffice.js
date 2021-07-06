@@ -2,7 +2,6 @@ var cedula;
 var counter = 0;
 var bolacha;
 var bolachinha;
-console.log(counter)
 
 
 /*function showCalendar() {
@@ -333,67 +332,58 @@ function logout() {
 }
 
 
-/*dosagemArray = []
-formaArray = []
-quantidadeArray = []
-tomaDiariaArray = []
-posologiaArray = []*/
-
 
 function registarReceita() {
   var medicamentoString = "";
-  console.log("batata")
-  //cedula = document.getElementById("cedulaProfissional").value;
-  //idMedico = bolachinha.value;
-  //renova = document.getElementById("auto-renov").checked;
+  var dosagemString = "";
+  var formaString = "";
+  var quantidadeString = "";
+  var quantidadeDiariaString = "";
+  var posologiaString = "";
+
+  if((document.getElementById("auto-renov").checked)=== true){
+    renova = "t"
+  }else{
+    renova = "f"
+  }
+  
 
   //idMedicamento = "" E agora ???????? 
   console.log(counter)
   //for (var r = -1; r <= counter; r++) {//um ciclo para cada uma das linhas adicionadas 0 = linha original
   do{
     medicamentoString = medicamentoString.concat(document.getElementById(`medicamento-dropdown${counter}`).value + "!!");
-    console.log(counter)
-    console.log(medicamentoString)
+    dosagemString = dosagemString.concat(document.getElementById(`dosagem-dropdown${counter}`).value + "!!");
+    formaString = formaString.concat(document.getElementById(`forma-dropdown${counter}`).value + "!!");
+    quantidadeString = quantidadeString.concat(document.getElementById(`quantidade-value${counter}`).value + "!!");
+    quantidadeDiariaString = quantidadeDiariaString.concat(document.getElementById(`quantidade-diaria${counter}`).value + "!!");
+    posologiaString = posologiaString.concat(document.getElementById(`posologia-text${counter}`).value + "!!");
+
     counter--
-    //console.log(document.getElementById(`medicamento-dropdown${counter}`).value)
-    /*dosagemArray.push(document.getElementById(`dosagem-dropdown${counter}`).value + "!!");
-    formaArray.push(document.getElementById(`forma-dropdown${counter}`).value + "!!");
-    quantidadeArray.push(document.getElementById(`quantidade-value${counter}`).value + "!!");
-    tomaDiariaArray.push(document.getElementById(`toma-diaria${counter}`).value + "!!");
-    posologiaArray.push(document.getElementById(`posologia-text${counter}`).value + "!!");*/
   }while(counter != -1)
 
-  console.log(medicamentoString)
   counter = 0;
   clearInput();
 
 
 
-
-
-
-
-
-
-/*
-  fetch('/registarMedicamento', {
+  fetch('/registarReceita', {
     method: 'POST',
     headers: {
       'Content-type': 'application/json'
     },
     body: JSON.stringify({
-      cedula = document.getElementById("cedulaProfissional").value,
-      idMedico = bolachinha.value,
-      //idMedicamento = "" E agora ???????? 
-      medicamentoNome = document.getElementById(`medicamento-dropdown${counter}`).value,
-      dosagem = document.getElementById(`dosagem-dropdown${counter}`).value,
-      forma = document.getElementById(`forma-dropdown${counter}`).value,
-      quantidade = document.getElementById(`quantidade-value${counter}`).value,
-      tomaDiaria = document.getElementById(`toma-diaria${counter}`).value,
-      posologia = document.getElementById(`posologia-text${counter}`).value,
-      renova = document.getElementById("auto-renov").checked,
+      medicamentoString : medicamentoString,
+      dosagemString : dosagemString,
+      formaString : formaString,
+      quantidadeString : quantidadeString,
+      quantidadeDiariaString : quantidadeDiariaString,
+      posologiaString : posologiaString,
+      idMedico : bolachinha.value,
+      numeroDeUtente : document.getElementById("id-paciente").value,
+      renova : renova
     })
   }).then(async (resposta) => {
 
-  });*/
+  });
 }

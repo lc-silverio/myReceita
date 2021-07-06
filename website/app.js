@@ -362,14 +362,14 @@ app.post('/medicamentos', jsonParser, (req, res) => {
 app.post('/registarReceita', jsonParser, (req, res) => {
 
   const newReceita = {
-    numeroDeUtente: req.query.numeroDeUtente,
-    idMedico: req.query.idMedico,
-    idMedicamento: req.query.idMedicamento, //ALTERAR NOME MEDICAMENTO
-    posologia: req.query.posologia,
-    renova: req.query.renova,
-    forma: req.query.forma,
-    quantidade: req.query.quantidade,
-    diariamente: req.query.diariamente
+    numeroDeUtente: req.body.numeroDeUtente,
+    idMedico: req.body.idMedico,
+    nomeMedicamento: req.body.medicamentoString, //ALTERAR NOME MEDICAMENTO
+    posologia: req.body.posologiaString,
+    renova: req.body.renova,
+    forma: req.body.formaString,
+    quantidade: req.body.quantidadeString,
+    diariamente: req.body.tomaDiariaString
   }
 
 
@@ -384,25 +384,34 @@ app.post('/registarReceita', jsonParser, (req, res) => {
       console.log("Select Executado.");
       var nReceita = rows[0].nReceita + 1;
       //Fim
+      console.log("aqui");
 
       //Para verificar a forma farmaceutica, dosagem e embalagem do medicamento da receita --> (Necessario para contas duracaoMedicamento)
       //Guardar todos os medicamentos recebidos num array
+
       var medicamentosArray = [];
-      medicamentosArray = newReceita.idMedicamento.split("!!");
+      console.log("ola!");
+      medicamentosArray = newReceita.nomeMedicamento.split("!!");
+      console.log("1.");
       //Guardar todos os renova recebidos num array
       var renovaArray = [];
       renovaArray = newReceita.renova.split("!!");
       //Guardar todas as posologias recebidas num array
+      console.log("2");
       var posologiaArray = [];
       posologiaArray = newReceita.posologia.split("!!");
       //Guardar todas as quantidades recebidos num array
+      console.log("3");
       var quantidadeArray = [];
       quantidadeArray = newReceita.quantidade.split("!!");
+      console.log("4");
 
 
       let duracaoMedicamentoArray = [];
-      for (let i = 0; i < medicamentosArray.length; i++) {
-        const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE nome = " + medicamentosArray[i] + ";";
+      console.log(medicamentosArray.length)
+
+      for (let i = 0; i < medicamentosArray.length - 1; i++) {
+        const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE nome ='" + medicamentosArray[i] + "';";
         const rows1 = await conn.query(selecionar1);
         console.log("Select " + i + " Executado. Inicio Loop " + i + ".");
 
@@ -453,8 +462,10 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
       //Registar uma receita na base de dados
       for (let i = 0; i < medicamentosArray.length; i++) { //FAZER SELECT DO NOME COM O ARRAY MEDICAMENTOS
+        const selecionar1 = "SELECT idMedicamento FROM medicamento WHERE nome = " + medicamentosArray[i] + ";";
+        const rows1 = await conn.query(selecionar1);
         console.log("Inicio Loop Inserir " + i + ".");
-        const string = "INSERT INTO receita values (" + NULL + ", " + nReceita + ", " + newReceita.numeroDeUtente + ", " + newReceita.idMedico + ", " + medicamentosArray[i] + ", '" + posologiaArray[i] + "', " + dataEmissao + ", " + duracaoMedicamentoArray[i] + ", " + validadeReceitaArray[i] + ", " + 0 + ", 'f', '" + renovaArray[i] + "', " + quantidadeArray[i] + ")";
+        const string = "INSERT INTO receita values (" + NULL + ", " + nReceita + ", " + newReceita.numeroDeUtente + ", " + newReceita.idMedico + ", " + rows1[0].nome + ", '" + posologiaArray[i] + "', " + dataEmissao + ", " + duracaoMedicamentoArray[i] + ", " + validadeReceitaArray[i] + ", " + 0 + ", 'f', '" + renovaArray[i] + "', " + quantidadeArray[i] + ")";
         console.log("Insert inicio.");
         let respo = await conn.query(string);
         console.log("Insert fim. Fim do loop " + i + ".");
