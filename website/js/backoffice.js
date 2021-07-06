@@ -1,4 +1,5 @@
 var cedula;
+window.counter = 0;
 
 /*function showCalendar() {
   var checkBox = document.getElementById("auto-renov");
@@ -13,9 +14,9 @@ var cedula;
 }*/
 
 function resetDropdown() {
-  var medicamentoDropdown = document.getElementById("medicamento-dropdown");
-  var dosagemDropdown = document.getElementById("dosagem-dropdown");
-  var formaDropdown = document.getElementById("forma-dropdown");
+  var medicamentoDropdown = document.getElementById("medicamento-dropdown0");
+  var dosagemDropdown = document.getElementById("dosagem-dropdown0");
+  var formaDropdown = document.getElementById("forma-dropdown0");
 
   medicamentoDropdown.selectedIndex = 0;
   dosagemDropdown.selectedIndex = 0;
@@ -44,7 +45,7 @@ function clearInput() {
   }
 
   resetDropdown();
-  /*showCalendar();*/
+  //showCalendar();
 }
 
 function addNewLine() {
@@ -56,31 +57,29 @@ function addNewLine() {
   var cell4 = row.insertCell(3);
   var cell5 = row.insertCell(4);
   var cell6 = row.insertCell(5);
+  var cell7 = row.insertCell(6);
 
-  cell1.innerHTML = `<select class="data" name="medicamento-dropdown" id="medicamento-dropdown">
+  cell1.innerHTML = `<select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown{counter}">
         <option value=""></option>
-        <option value="Paracetamol">Paracetamol</option>
-        <option value="Mebocaina">Mebocaina</option>
         </select>`;/*Medicamento*/
 
-  cell2.innerHTML = `<select class="data" name="dosagem-dropdown" id="dosagem-dropdown">
+  cell2.innerHTML = `<select class="data, dosagem-dropdown" name="dosagem-dropdown" id="dosagem-dropdown{counter}">
         <option value=""></option>
-        <option value="500mg">500mg</option>
-        <option value="1000mg">1000mg</option>
         </select>`;/*Dosagem*/
 
-  cell3.innerHTML = `<select class="data" name="forma-dropdown" id="forma-dropdown">
+  cell3.innerHTML = `<select class="data, forma-dropdown" name="forma-dropdown" id="forma-dropdown{counter}">
         <option value=""></option>
-        <option value="Capsula">Capsula</option>
-        <option value="Comprimido">Comprimido</option>
         </select>`;/*Forma*/
 
-  cell4.innerHTML = `<input class="data" type="number" name="quantidade-value" id="quantidade-value">`;/*Qtd*/
+  cell4.innerHTML = `<input class="data, quantidade-value" type="number" name="quantidade-value" id="quantidade-value{counter}">`;/*Qtd*/
 
-  cell5.innerHTML = `<input class="data" type="text" name="posologia-text" id="posologia-text">`;/*Posologia*/
+  cell5.innerHTML = `<input class="data, posologia-text" type="text" name="posologia-text" id="posologia-text{counter}">`;/*Posologia*/
 
-  cell6.innerHTML = `<img id="clear" onclick="limparLinha(this)" src="/img/delete.svg" alt="Apagar linha">`;/*Limpar*/
+  cell6.innerHTML = `<input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria{counter}">`;/*Quantidade Diária*/
 
+  cell7.innerHTML = `<img id="clear" onclick="limparLinha(this)" src="/img/delete.svg" alt="Apagar linha">`;/*Limpar*/
+
+  medFetch();
 }
 
 function limparLinha(r) {
@@ -185,9 +184,62 @@ function medFetch() {
       'Content-type': 'application/json'
     },
     body: JSON.stringify({
-      medicamento: document.getElementById("medicamento-dropdown").value,
-      dosagem: document.getElementById("dosagem-dropdown").value,
-      forma: document.getElementById("forma-dropdown").value,
+      medicamento: document.getElementById(`medicamento-dropdown0`).value,
+      dosagem: document.getElementById("dosagem-dropdown0").value,
+      forma: document.getElementById("forma-dropdown0").value,
+    })
+  }).then(async (resposta) => {
+    const X = await resposta.json();
+
+    //MEDICAMENTOS
+    var nomeString = X.nome.split("!!")
+    nomeString.splice(nomeString.length - 1)
+
+
+    var sel = document.getElementById(`medicamento-dropdown{counter}`);
+     for (var i = 0; i < nomeString.length; i++) {
+      var opt = document.createElement('option');
+      opt.innerHTML = nomeString[i];
+      opt.value = nomeString[i];
+      sel.appendChild(opt);
+    }
+
+    //DOSAGEM
+    var dosagemString = X.dosagem.split("!!")
+    dosagemString.splice(dosagemString.length - 1)
+
+    var sel = document.getElementById(`dosagem-dropdown{counter}`);
+    for (var i = 0; i < dosagemString.length; i++) {
+      var opt = document.createElement('option');
+      opt.innerHTML = dosagemString[i] + "mg";
+      opt.value = dosagemString[i];
+      sel.appendChild(opt);
+    }
+
+    //FORMA FARMACEUTICA
+    var formaFarmaceuticaString = X.formaFarmaceutica.split("!!")
+    formaFarmaceuticaString.splice(formaFarmaceuticaString.length - 1)
+
+    var sel = document.getElementById(`forma-dropdown{counter}`);
+    for (var i = 0; i < formaFarmaceuticaString.length; i++) {
+      var opt = document.createElement('option');
+      opt.innerHTML = formaFarmaceuticaString[i];
+      opt.value = formaFarmaceuticaString[i];
+      sel.appendChild(opt);
+    }
+  });
+}
+
+function medFetchMain() {
+  fetch('/medicamentos', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      medicamento: document.getElementById("medicamento-dropdown0").value,
+      dosagem: document.getElementById("dosagem-dropdown0").value,
+      forma: document.getElementById("forma-dropdown0").value,
     })
   }).then(async (resposta) => {
     const X = await resposta.json();
@@ -199,7 +251,7 @@ function medFetch() {
     //console.log(nomeString)
     nomeString.splice(nomeString.length - 1)
 
-    var sel = document.getElementById('medicamento-dropdown');
+    var sel = document.getElementById('medicamento-dropdown0');
     for (var i = 0; i < nomeString.length; i++) {
       var opt = document.createElement('option');
       opt.innerHTML = nomeString[i];
@@ -212,7 +264,7 @@ function medFetch() {
     //console.log(dosagemString)
     dosagemString.splice(dosagemString.length - 1)
 
-    var sel = document.getElementById('dosagem-dropdown');
+    var sel = document.getElementById('dosagem-dropdown0');
     for (var i = 0; i < dosagemString.length; i++) {
       var opt = document.createElement('option');
       opt.innerHTML = dosagemString[i] + "mg";
@@ -225,7 +277,7 @@ function medFetch() {
     //console.log(formaFarmaceuticaString)
     formaFarmaceuticaString.splice(formaFarmaceuticaString.length - 1)
 
-    var sel = document.getElementById('forma-dropdown');
+    var sel = document.getElementById('forma-dropdown0');
     for (var i = 0; i < formaFarmaceuticaString.length; i++) {
       var opt = document.createElement('option');
       opt.innerHTML = formaFarmaceuticaString[i];

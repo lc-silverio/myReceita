@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" href="./img/favicon.png" />
 </head>
 
-<body onload="medFetch()">
+<body onload="medFetchMain()">
     <div class=" navigation">
         <a href="index.html"><img src="/img/logo.svg" alt="logotipo myReceita"></a>
         <ul class="nav-list">
@@ -80,33 +80,33 @@
                     </tr>
                     <tr>
                         <td>
-                            <select class="data" name="medicamento-dropdown" id="medicamento-dropdown">
+                            <select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown0">
                                 <option value=""></option>
                             </select>
                         </td>
 
                         <td>
-                            <select class="data" name="dosagem-dropdown" id="dosagem-dropdown">
+                            <select class="data, dosagem-dropdown" name="dosagem-dropdown" id="dosagem-dropdown0">
                                 <option value=""></option>
                             </select>
                         </td>
 
                         <td>
-                            <select class="data" name="forma-dropdown" id="forma-dropdown">
+                            <select class="data, forma-dropdown" name="forma-dropdown" id="forma-dropdown0">
                                 <option value=""></option>
                             </select>
                         </td>
 
                         <td>
-                            <input class="data" type="number" name="quantidade-value" id="quantidade-value">
+                            <input class="data, quantidade-value" type="number" name="quantidade-value" id="quantidade-value0">
                         </td>
 
                         <td>
-                            <input class="data" type="text" name="posologia-text" id="posologia-text">
+                            <input class="data, posologia-text"" type="text" name="posologia-text" id="posologia-text0">
                         </td>
 
                         <td>
-                            <input class="data" type="number" name="quantidade-diaria" id="quantidade-diaria">
+                            <input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria0">
                         </td>
 
                         <td>
@@ -114,7 +114,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="add"><button id="adicionar" class="adicionar" onclick="addNewLine()"><i class="fa fa-plus" aria-hidden="true"></i> Adiconar </button></td>
+                        <td class="add"><button id="adicionar" class="adicionar" onclick="addNewLine()"><i class="fa fa-plus" aria-hidden="true" onclick="medFetch()"></i> Adiconar </button></td>
                     </tr>
 
                 </table>
