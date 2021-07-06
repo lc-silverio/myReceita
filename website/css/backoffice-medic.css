@@ -295,13 +295,14 @@ select:focus{
   border-color: var(--primary-color);
 }
 
-#quantidade-value{
+.quantidade-value{
   width: 50px;
 }
 
-#posologia-text{
+.posologia-text{
   width: 250px;
   height: 50px;
+  margin-top: 5px;
 }
 
 .add{
@@ -334,7 +335,7 @@ select:focus{
   font-weight: 600;
 }
 
-#quantidade-value{
+.quantidade-value{
   text-align: center;
 }
 
@@ -360,6 +361,6 @@ input, select{
   cursor: pointer;
 }
 
-input#quantidade-diaria{
+input.quantidade-diaria{
   width: 50px;
 }

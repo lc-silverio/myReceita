@@ -319,7 +319,7 @@ app.post('/medicamentos', jsonParser, (req, res) => {
       let conn = await pool.getConnection();
       const selecionar = "SELECT nome, dosagem, formaFarmaceutica FROM medicamento;";
       let rows = await conn.query(selecionar);
-      console.log("Medicamentos: Select all Executado.");
+      console.log("Medicamentos-dropdown: Select all executado.");
 
       let nomeString = "";
       let dosagemString = "";
@@ -349,6 +349,14 @@ app.post('/medicamentos', jsonParser, (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
 //------------------------------------------------------------->   MEDICOS
 //REGISTO DE UMA RECEITA
 app.post('/registarReceita', jsonParser, (req, res) => {
@@ -359,6 +367,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
     idMedicamento: req.query.idMedicamento,
     posologia: req.query.posologia,
     renova: req.query.renova,
+    forma: req.query.forma,
     quantidade: req.query.quantidade,
     diariamente: req.query.diariamente
   }

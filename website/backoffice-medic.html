@@ -27,6 +27,7 @@
             <div>
                 <img src="/img/doctor2.svg" alt="">
                 <p>Saudações</p>
+                <p id="funcionarioID"></p>
             </div>
 
             <div>
@@ -69,13 +70,13 @@
 
             <div class="medicine">
                 <table id="table" style="width:100%">
-                    <tr>
+                    <tr id="teste">
                         <th>Medicamento</th>
                         <th>Dosagem</th>
                         <th>Forma</th>
                         <th>Qtd</th>
-                        <th>Posologia</th>
                         <th>Toma diária</th>
+                        <th>Posologia</th>
                         <th></th>
                     </tr>
                     <tr>
@@ -102,11 +103,11 @@
                         </td>
 
                         <td>
-                            <input class="data, posologia-text"" type="text" name="posologia-text" id="posologia-text0">
+                            <input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria0">
                         </td>
 
                         <td>
-                            <input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria0">
+                            <input class="data, posologia-text"" type=" text" name="posologia-text" id="posologia-text0">
                         </td>
 
                         <td>
@@ -134,7 +135,7 @@
 
             <div class="commands">
                 <button class="btn" onclick="clearInput()"><i class="fa fa-times" aria-hidden="true"></i> Limpar tudo</button>
-                <button class="btn"><i class="fa fa-check" aria-hidden="true"></i> Submeter</button>
+                <button class="btn" onclick="teste()"><i class="fa fa-check" aria-hidden="true"></i> Submeter</button>
             </div>
         </section>
     </section>

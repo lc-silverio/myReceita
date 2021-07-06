@@ -1,5 +1,6 @@
 var cedula;
-window.counter = 0;
+var bolacha;
+var bolachinha;
 
 /*function showCalendar() {
   var checkBox = document.getElementById("auto-renov");
@@ -73,9 +74,9 @@ function addNewLine() {
 
   cell4.innerHTML = `<input class="data, quantidade-value" type="number" name="quantidade-value" id="quantidade-value{counter}">`;/*Qtd*/
 
-  cell5.innerHTML = `<input class="data, posologia-text" type="text" name="posologia-text" id="posologia-text{counter}">`;/*Posologia*/
+  cell5.innerHTML = `<input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria{counter}">`;/*Quantidade Diária*/
 
-  cell6.innerHTML = `<input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria{counter}">`;/*Quantidade Diária*/
+  cell6.innerHTML = `<input class="data, posologia-text" type="text" name="posologia-text" id="posologia-text{counter}">`;/*Posologia*/
 
   cell7.innerHTML = `<img id="clear" onclick="limparLinha(this)" src="/img/delete.svg" alt="Apagar linha">`;/*Limpar*/
 
@@ -136,6 +137,7 @@ function verificarLogin() {
   if (identificacao == "" || pass == "") {
     window.alert("Cédula Profissional ou palavra-passe incorreta. Por favor tente novamente.")
   } else {
+    document.cookie = document.getElementById("cedulaProfissional").value
     login()
   }
 }
@@ -195,12 +197,16 @@ function medFetch() {
     var nomeString = X.nome.split("!!")
     nomeString.splice(nomeString.length - 1)
 
+    var nomeStringClean = nomeString.filter((c, index) => {
+      return nomeString.indexOf(c) === index;
+    })
+    //console.log(nomeStringClean)
 
     var sel = document.getElementById(`medicamento-dropdown{counter}`);
-     for (var i = 0; i < nomeString.length; i++) {
+    for (var i = 0; i < nomeStringClean.length; i++) {
       var opt = document.createElement('option');
-      opt.innerHTML = nomeString[i];
-      opt.value = nomeString[i];
+      opt.innerHTML = nomeStringClean[i];
+      opt.value = nomeStringClean[i];
       sel.appendChild(opt);
     }
 
@@ -208,11 +214,16 @@ function medFetch() {
     var dosagemString = X.dosagem.split("!!")
     dosagemString.splice(dosagemString.length - 1)
 
+    var dosagemStringClean = dosagemString.filter((c, index) => {
+      return dosagemString.indexOf(c) === index;
+    })
+    //console.log(dosagemStringClean)
+
     var sel = document.getElementById(`dosagem-dropdown{counter}`);
-    for (var i = 0; i < dosagemString.length; i++) {
+    for (var i = 0; i < dosagemStringClean.length; i++) {
       var opt = document.createElement('option');
-      opt.innerHTML = dosagemString[i] + "mg";
-      opt.value = dosagemString[i];
+      opt.innerHTML = dosagemStringClean[i] + "mg";
+      opt.value = dosagemStringClean[i];
       sel.appendChild(opt);
     }
 
@@ -220,11 +231,16 @@ function medFetch() {
     var formaFarmaceuticaString = X.formaFarmaceutica.split("!!")
     formaFarmaceuticaString.splice(formaFarmaceuticaString.length - 1)
 
+    var formaFarmaceuticaStringClean = formaFarmaceuticaString.filter((c, index) => {
+      return formaFarmaceuticaString.indexOf(c) === index;
+    })
+    //console.log(formaFarmaceuticaStringClean)
+
     var sel = document.getElementById(`forma-dropdown{counter}`);
-    for (var i = 0; i < formaFarmaceuticaString.length; i++) {
+    for (var i = 0; i < formaFarmaceuticaStringClean.length; i++) {
       var opt = document.createElement('option');
-      opt.innerHTML = formaFarmaceuticaString[i];
-      opt.value = formaFarmaceuticaString[i];
+      opt.innerHTML = formaFarmaceuticaStringClean[i];
+      opt.value = formaFarmaceuticaStringClean[i];
       sel.appendChild(opt);
     }
   });
@@ -251,11 +267,16 @@ function medFetchMain() {
     //console.log(nomeString)
     nomeString.splice(nomeString.length - 1)
 
+    var nomeStringClean = nomeString.filter((c, index) => {
+      return nomeString.indexOf(c) === index;
+    })
+    //console.log(nomeStringClean)
+
     var sel = document.getElementById('medicamento-dropdown0');
-    for (var i = 0; i < nomeString.length; i++) {
+    for (var i = 0; i < nomeStringClean.length; i++) {
       var opt = document.createElement('option');
-      opt.innerHTML = nomeString[i];
-      opt.value = nomeString[i];
+      opt.innerHTML = nomeStringClean[i];
+      opt.value = nomeStringClean[i];
       sel.appendChild(opt);
     }
 
@@ -264,11 +285,16 @@ function medFetchMain() {
     //console.log(dosagemString)
     dosagemString.splice(dosagemString.length - 1)
 
+    var dosagemStringClean = dosagemString.filter((c, index) => {
+      return dosagemString.indexOf(c) === index;
+    })
+    //console.log(dosagemStringClean)
+
     var sel = document.getElementById('dosagem-dropdown0');
-    for (var i = 0; i < dosagemString.length; i++) {
+    for (var i = 0; i < dosagemStringClean.length; i++) {
       var opt = document.createElement('option');
-      opt.innerHTML = dosagemString[i] + "mg";
-      opt.value = dosagemString[i];
+      opt.innerHTML = dosagemStringClean[i] + "mg";
+      opt.value = dosagemStringClean[i];
       sel.appendChild(opt);
     }
 
@@ -277,17 +303,31 @@ function medFetchMain() {
     //console.log(formaFarmaceuticaString)
     formaFarmaceuticaString.splice(formaFarmaceuticaString.length - 1)
 
+    var formaFarmaceuticaStringClean = formaFarmaceuticaString.filter((c, index) => {
+      return formaFarmaceuticaString.indexOf(c) === index;
+    })
+    //console.log(formaFarmaceuticaStringClean)
+
     var sel = document.getElementById('forma-dropdown0');
-    for (var i = 0; i < formaFarmaceuticaString.length; i++) {
+    for (var i = 0; i < formaFarmaceuticaStringClean.length; i++) {
       var opt = document.createElement('option');
-      opt.innerHTML = formaFarmaceuticaString[i];
-      opt.value = formaFarmaceuticaString[i];
+      opt.innerHTML = formaFarmaceuticaStringClean[i];
+      opt.value = formaFarmaceuticaStringClean[i];
       sel.appendChild(opt);
     }
   });
+
+  bolacha = document.cookie.split(" ")
+  bolachinha = bolacha[1]
+  console.log(bolachinha)
+
 }
 
-function logout(){
+function logout() {
   window.location = "index.html";
 
+}
+
+function teste(){
+  console.log(bolachinha)
 }
