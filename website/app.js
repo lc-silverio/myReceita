@@ -489,7 +489,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 //------------------------------------------------------------->   FARMACEUTICOS
 //
 //
-// Devolver nome do paciente
+// Devolver numero do cartao de utente e receitas!!!!!!!!!!!!!! e estado de levantamento
 app.post('/verificarReceita', jsonParser, (req, res) => {
 
   const newPaciente = {

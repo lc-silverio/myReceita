@@ -18,12 +18,12 @@ var bolachinha;
 
 function resetDropdown() {
   var medicamentoDropdown = document.getElementById("medicamento-dropdown0");
-  var dosagemDropdown = document.getElementById("dosagem-dropdown0");
-  var formaDropdown = document.getElementById("forma-dropdown0");
+  //var dosagemDropdown = document.getElementById("dosagem-dropdown0");
+  //var formaDropdown = document.getElementById("forma-dropdown0");
 
   medicamentoDropdown.selectedIndex = 0;
-  dosagemDropdown.selectedIndex = 0;
-  formaDropdown.selectedIndex = 0;
+  //dosagemDropdown.selectedIndex = 0;
+  //formaDropdown.selectedIndex = 0;
 }
 
 function clearInput() {
@@ -57,22 +57,22 @@ function addNewLine() {
   var table = document.getElementById("table");
   var row = table.insertRow(2);
   var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4);
-  var cell6 = row.insertCell(5);
-  var cell7 = row.insertCell(6);
+  //var cell2 = row.insertCell(1);
+  //var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(1);
+  var cell5 = row.insertCell(2);
+  var cell6 = row.insertCell(3);
+  var cell7 = row.insertCell(4);
 
   cell1.innerHTML = `<select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown${counter}">
         <option value=""></option>
         </select>`;/*Medicamento*/
 
-  cell2.innerHTML = `<select class="data, dosagem-dropdown" name="dosagem-dropdown" id="dosagem-dropdown${counter}">
+  /*cell2.innerHTML = `<select class="data, dosagem-dropdown" name="dosagem-dropdown" id="dosagem-dropdown${counter}">
         <option value=""></option>
         </select>`;/*Dosagem*/
 
-  cell3.innerHTML = `<select class="data, forma-dropdown" name="forma-dropdown" id="forma-dropdown${counter}">
+  /*cell3.innerHTML = `<select class="data, forma-dropdown" name="forma-dropdown" id="forma-dropdown${counter}">
         <option value=""></option>
         </select>`;/*Forma*/
 
@@ -191,8 +191,8 @@ function medFetch() {
     },
     body: JSON.stringify({
       medicamento: document.getElementById(`medicamento-dropdown0`).value,
-      dosagem: document.getElementById("dosagem-dropdown0").value,
-      forma: document.getElementById("forma-dropdown0").value,
+      //dosagem: document.getElementById("dosagem-dropdown0").value,
+      //forma: document.getElementById("forma-dropdown0").value,
     })
   }).then(async (resposta) => {
     const X = await resposta.json();
@@ -214,8 +214,8 @@ function medFetch() {
       sel.appendChild(opt);
     }
 
-    //DOSAGEM
-    var dosagemString = X.dosagem.split("!!")
+    //DOSAGEM/*
+    /*var dosagemString = X.dosagem.split("!!")
     dosagemString.splice(dosagemString.length - 1)
 
     var dosagemStringClean = dosagemString.filter((c, index) => {
@@ -229,9 +229,9 @@ function medFetch() {
       opt.innerHTML = dosagemStringClean[i] + "mg";
       opt.value = dosagemStringClean[i];
       sel.appendChild(opt);
-    }
+    }*/
 
-    //FORMA FARMACEUTICA
+    /*//FORMA FARMACEUTICA
     var formaFarmaceuticaString = X.formaFarmaceutica.split("!!")
     formaFarmaceuticaString.splice(formaFarmaceuticaString.length - 1)
 
@@ -246,7 +246,7 @@ function medFetch() {
       opt.innerHTML = formaFarmaceuticaStringClean[i];
       opt.value = formaFarmaceuticaStringClean[i];
       sel.appendChild(opt);
-    }
+    }*/
   });
 }
 
@@ -258,8 +258,8 @@ function medFetchMain() {
     },
     body: JSON.stringify({
       medicamento: document.getElementById("medicamento-dropdown0").value,
-      dosagem: document.getElementById("dosagem-dropdown0").value,
-      forma: document.getElementById("forma-dropdown0").value,
+      //dosagem: document.getElementById("dosagem-dropdown0").value,
+      //forma: document.getElementById("forma-dropdown0").value,
     })
   }).then(async (resposta) => {
     const X = await resposta.json();
@@ -284,14 +284,14 @@ function medFetchMain() {
       sel.appendChild(opt);
     }
 
-    //DOSAGEM
-    var dosagemString = X.dosagem.split("!!")
+    /*//DOSAGEM
+    //var dosagemString = X.dosagem.split("!!")
     //console.log(dosagemString)
-    dosagemString.splice(dosagemString.length - 1)
+    //dosagemString.splice(dosagemString.length - 1)
 
-    var dosagemStringClean = dosagemString.filter((c, index) => {
-      return dosagemString.indexOf(c) === index;
-    })
+    //var dosagemStringClean = dosagemString.filter((c, index) => {
+      //return dosagemString.indexOf(c) === index;
+    //})
     //console.log(dosagemStringClean)
 
     var sel = document.getElementById('dosagem-dropdown0');
@@ -302,7 +302,7 @@ function medFetchMain() {
       sel.appendChild(opt);
     }
 
-    //DOSAGEM
+    //FORMA FARMACEUTICA
     var formaFarmaceuticaString = X.formaFarmaceutica.split("!!")
     //console.log(formaFarmaceuticaString)
     formaFarmaceuticaString.splice(formaFarmaceuticaString.length - 1)
@@ -318,13 +318,12 @@ function medFetchMain() {
       opt.innerHTML = formaFarmaceuticaStringClean[i];
       opt.value = formaFarmaceuticaStringClean[i];
       sel.appendChild(opt);
-    }
-  });
+    }*/
+  })
 
-  bolacha = document.cookie.split(" ")
-  bolachinha = bolacha[1]
+  bolacha = document.cookie.split(" ");
+  bolachinha = bolacha[1];
   //console.log(bolachinha)
-
 }
 
 function logout() {
@@ -336,7 +335,7 @@ function logout() {
 function registarReceita() {
   var medicamentoString = "";
   var dosagemString = "";
-  var formaString = "";
+  //var formaString = "";
   var quantidadeString = "";
   var quantidadeDiariaString = "";
   var posologiaString = "";
@@ -353,8 +352,8 @@ function registarReceita() {
   //for (var r = -1; r <= counter; r++) {//um ciclo para cada uma das linhas adicionadas 0 = linha original
   do{
     medicamentoString = medicamentoString.concat(document.getElementById(`medicamento-dropdown${counter}`).value + "!!");
-    dosagemString = dosagemString.concat(document.getElementById(`dosagem-dropdown${counter}`).value + "!!");
-    formaString = formaString.concat(document.getElementById(`forma-dropdown${counter}`).value + "!!");
+    //dosagemString = dosagemString.concat(document.getElementById(`dosagem-dropdown${counter}`).value + "!!");
+    //formaString = formaString.concat(document.getElementById(`forma-dropdown${counter}`).value + "!!");
     quantidadeString = quantidadeString.concat(document.getElementById(`quantidade-value${counter}`).value + "!!");
     quantidadeDiariaString = quantidadeDiariaString.concat(document.getElementById(`quantidade-diaria${counter}`).value + "!!");
     posologiaString = posologiaString.concat(document.getElementById(`posologia-text${counter}`).value + "!!");
@@ -374,8 +373,8 @@ function registarReceita() {
     },
     body: JSON.stringify({
       medicamentoString : medicamentoString,
-      dosagemString : dosagemString,
-      formaString : formaString,
+      //dosagemString : dosagemString,
+      //formaString : formaString,
       quantidadeString : quantidadeString,
       quantidadeDiariaString : quantidadeDiariaString,
       posologiaString : posologiaString,
@@ -387,3 +386,4 @@ function registarReceita() {
 
   });
 }
+
