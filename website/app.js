@@ -208,65 +208,55 @@ app.post('/receita', jsonParser, (req, res) => {
 
 });
 //------------------------------------------------------------->   FIM DE UTENTES
-//
-//
-//------------------------- LUIS  -------------------------------------------------------------------------------------------------------------------------------------
-//
-//
-//                                                      ---------------> NOTAS <---------------
-// 1- todas as comunicações rest estão em Querys, se as quiseres alterar para bodys eu consigo faze-lo facilmente, 
-//        se for para outra coisa qualquer vou ter de aprender mas n vai ser nenhuma dor de cabeça.
-//
-// 2- o response vai variando entre apenas um status e um status e um json
-//
-// 3- a leitura dos dados quando é enviar em json no lado do backofice do site pode-te parecer confuso mas é bastante simples, 
-//         eu consigo explicar como funciona em 5 min. 
-//
-// 4- basicamente quando vai json envio todos os nomes dos medicamentos (p.e.) no mesmo id, o que os separa é dois char '!!' entre os nomes, 
-//         e o mesmo acontece com os restantes ids. Isto não é a maneira mais correta de o fazer mas devido a conflitos decidi fazer assim.
-//            Caso nao gostes podemos alterar a comunicação no lado da web, mas antes de alterar deixa-me explicar-te como se lê pq esta mt simples mesmo.
-//
-//
-//
 
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
 
+
+//                                                      ⬆️João - Android
+
+//                                                      ⬇️Luís - Web
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
 // Login Medicos & Farmaceuticos - OK
+
 app.post('/loginFuncionario', (req, res) => {
 
-  const newFuncionario = {
-    cedulaProfissional: req.body.cedulaProfissional,
-    password: req.body.password,
+  const newFuncionario = {//Recebe o json com os dados do pedido
+    cedulaProfissional: req.body.cedulaProfissional, //Cedula profissional do médico/enfermeiro
+    password: req.body.password, //password
   }
 
 
 
   async function autenticar() {
     try {
-      let conn = await pool.getConnection();
-      const selecionar = "SELECT cedulaProfissional FROM funcionario WHERE cedulaProfissional = " + newFuncionario.cedulaProfissional + " AND pass = '" + newFuncionario.password + "';";
-      let rows = await conn.query(selecionar);
+      let conn = await pool.getConnection();//Liga à BD
+      const selecionar = "SELECT cedulaProfissional FROM funcionario WHERE cedulaProfissional = " + newFuncionario.cedulaProfissional + " AND pass = '" + newFuncionario.password + "';"; //Query a enviar
+      let rows = await conn.query(selecionar);//Executa a query e espera pela resposta
+
       console.log("Login funcionário: Select Executado.");
+
       if (rows[0] != null) {
         console.log("Login funcionário: Conta autenticada.");
 
-        const funcao = "SELECT funcao FROM funcionario WHERE cedulaProfissional =" + newFuncionario.cedulaProfissional + ";";
+        const funcao = "SELECT funcao FROM funcionario WHERE cedulaProfissional =" + newFuncionario.cedulaProfissional + ";";//Verifica o tipo de funcionário
         let rows1 = await conn.query(funcao);
-        //console.log(rows1[0].funcao)
 
-        if (rows1[0].funcao == "M") {
-          res.send({ mensagem: "medic" })
+        if (rows1[0].funcao == "M") { //Devolve o tipo numa mensagem json conforme o resultado da BD
+          res.send({ mensagem: "medic" })//Médico 
         } else {
-          res.send({ mensagem: "farm" })
+          res.send({ mensagem: "farm" })//Farmaceutico
         }
 
         res.status(200).send();
       } else {
-        console.log("Login funcionário: Cedula Profissional ou Palavra Passe incorreta.");
+        console.log("Login funcionário: Cedula Profissional ou Palavra Passe incorreta.");//Erro
         res.send({ mensagem: "erro" })
       }
     } catch (err) {
-      console.log("Login funcionário: Cedula Profissional ou Palavra Passe incorreta.");
+      console.log("Login funcionário: Cedula Profissional ou Palavra Passe incorreta.");//Erro
       res.send({ mensagem: "erro" })
     }
   }
@@ -275,30 +265,39 @@ app.post('/loginFuncionario', (req, res) => {
 
 });
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 
-// Devolver nome do paciente - OK
+//                                                      ⬇️Médicos
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+// Nome do paciente - OK
+
 app.post('/verificarPaciente', jsonParser, (req, res) => {
 
-  const newPaciente = {
-    numeroUtente: req.body.paciente
+  const newPaciente = {//Recebe o json com os dados do pedido
+    numeroUtente: req.body.paciente //Numero do cartão de utente
   }
 
   async function autenticar() {
     try {
-      let conn = await pool.getConnection();
-      const selecionar = "SELECT nome FROM paciente WHERE cartaoUtente = " + newPaciente.numeroUtente + ";";
-      let rows = await conn.query(selecionar);
-      console.log("verificarPaciente: Select Executado.");
-      if (rows[0] != null) {
-        console.log("verificarPaciente: Conta encontrada.");
+      let conn = await pool.getConnection();//Liga à base de dados
+      const selecionar = "SELECT nome FROM paciente WHERE cartaoUtente = " + newPaciente.numeroUtente + ";"; //Formula da query
+      let rows = await conn.query(selecionar); //Executa a query
+
+      console.log("verificarPaciente: Procura executada.");
+
+      if (rows[0] != null) {// Se encontrar o cartão de utente recebido, envia de volta o nome do utente
+        console.log("verificarPaciente: Cartão de utente encontrado."); 
         res.json({ 'status': '200', nomeUtente: rows[0].nome });
       } else {
-        console.log("verificarPaciente: Erro SQL - Não encontrado");
+        console.log("verificarPaciente: Erro SQL - Cartão de utente não encontrado");//Erro
         res.send({ mensagem: "erro" })
       }
     } catch (err) {
-      console.log("verificarPaciente: Erro");
+      console.log("verificarPaciente: Erro não definido");
       console.log(err)
       res.send({ mensagem: "erro" })
     }
@@ -308,34 +307,37 @@ app.post('/verificarPaciente', jsonParser, (req, res) => {
 
 });
 
-
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
 //Lista medicamentos (dropdown)  - OK
 //Devolver nome, dosagem e forma farmaceutica de todos os medicamentos. No html separar cada id do json por '!!' e colocar numa lista.
+
+
 app.post('/medicamentos', jsonParser, (req, res) => {
 
   async function autenticar() {
     try {
-      let conn = await pool.getConnection();
-      const selecionar = "SELECT nome, dosagem, formaFarmaceutica FROM medicamento;";
-      let rows = await conn.query(selecionar);
-      console.log("Medicamentos-dropdown: Select all executado.");
+      let conn = await pool.getConnection();// Liga à base de dados
+      const selecionar = "SELECT nome, dosagem, formaFarmaceutica FROM medicamento;"; //Formula da query
+      let rows = await conn.query(selecionar); // Executa a query
 
-      let nomeString = "";
-      let dosagemString = "";
-      let formaFarmaceuticaString = "";
+      console.log("Medicamentos-dropdown: Listagem dos medicamentos executada.");
+
+      //Inicializar as strings a enviar
+      let nomeString = ""; //Nome do medicamento
+      let dosagemString = ""; //Dosagem do medicamento
+      let formaFarmaceuticaString = ""; //Forma farmaceutica do medicamento
+
+      //Itera por cada elemento da BD, adiciona o mesmo à string e passa ao próximo elemento
       for (let i = 0; i < rows.length; i++) {
-        nomeString += rows[i].nome + "!!";
-        dosagemString += rows[i].dosagem + "!!";
-        formaFarmaceuticaString += rows[i].formaFarmaceutica + "!!";
+        nomeString += rows[i].nome + "!!"; //Nome do medicamento
+        dosagemString += rows[i].dosagem + "!!"; //Dosagem do medicamento
+        formaFarmaceuticaString += rows[i].formaFarmaceutica + "!!"; //Forma farmaceutica do medicamento
       }
-      /*console.log(nomeString)
-      console.log(dosagemString)
-      console.log(formaFarmaceuticaString)*/
-      res.json({ 'status': '200', nome: nomeString, dosagem: dosagemString, formaFarmaceutica: formaFarmaceuticaString });
+
+      res.json({ 'status': '200', nome: nomeString, dosagem: dosagemString, formaFarmaceutica: formaFarmaceuticaString });//Envia os dados
 
     } catch (err) {
-      console.log("ERRO Medicamentos");
+      console.log("Medicamentos - Erro não especificado / BD timeout - Demasiadas queries"); //
       res.status(400).send();
     }
   }
@@ -344,84 +346,69 @@ app.post('/medicamentos', jsonParser, (req, res) => {
 
 });
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+//REGISTO DE UMA RECEITA - OK
 
-
-
-
-
-
-
-
-
-
-
-
-
-//------------------------------------------------------------->   MEDICOS
-//REGISTO DE UMA RECEITA
 app.post('/registarReceita', jsonParser, (req, res) => {
 
   const newReceita = {
-    numeroDeUtente: req.body.numeroDeUtente,
-    idMedico: req.body.idMedico,
-    nomeMedicamento: req.body.medicamentoString, //ALTERAR NOME MEDICAMENTO
-    posologia: req.body.posologiaString,
-    renova: req.body.renova,
-    forma: req.body.formaString,
-    quantidade: req.body.quantidadeString,
-    diariamente: req.body.quantidadeDiariaString
+    numeroDeUtente: req.body.numeroDeUtente, //Cartão de utente
+    idMedico: req.body.idMedico, //Cédula profissional
+    nomeMedicamento: req.body.medicamentoString, // Nome do medicamento
+    posologia: req.body.posologiaString, //Posologia - Indicações de toma
+    renova: req.body.renova, //Token de renovação da receita
+    forma: req.body.formaString, //Forma Farmaceutica
+    quantidade: req.body.quantidadeString, //Quantidade de embalagens
+    diariamente: req.body.quantidadeDiariaString //Quantida de comprimidos/ xarope a tomar por dia
   }
 
 
 
   async function registoMedicamento() {
     try {
-      let conn = await pool.getConnection();
+      let conn = await pool.getConnection(); //Liga à base de dados
 
-      //Para verificar ultimo numero de receita inserido
-      const selecionar = "SELECT MAX(nReceita)FROM receita;";
-      let rows = await conn.query(selecionar);
-      console.log("Select Executado.");
-      console.log(idMedico)
-      var nReceita = rows[0].nReceita + 1;
-      //Fim
-      console.log("aqui");
+      //Verificar o numero da ultima receita inserida
+      const selecionar = "SELECT MAX(nReceita) AS MaxValues FROM receita;"; //Formula da query
+      let rows = await conn.query(selecionar);// Executa a query para ir buscar o numero da ultima receita emitida
+
+      console.log("Registar receita - nova receita no fundo da lista");
+
+      const nReceita = rows[0].MaxValues + 1; //Usa o resultado obtido a adiciona +1 ao resultado
+
+      const selecionar1 = "SELECT idFuncionario FROM funcionario WHERE cedulaProfissional = " + newReceita.idMedico +";"; //Formula da query
+      let rows1 = await conn.query(selecionar1); //Executa a query para ir buscar o id do funcionário a quem pertence a cédula profissional
+      var medico = rows1[0].idFuncionario;
+
+      //Guardar toma diaria em array
+      var diariamenteArray = [];
+      diariamenteArray = newReceita.diariamente.split("!!");
+
       //Para verificar a forma farmaceutica, dosagem e embalagem do medicamento da receita --> (Necessario para contas duracaoMedicamento)
       //Guardar todos os medicamentos recebidos num array
 
       var medicamentosArray = [];
-      console.log("ola!");
       medicamentosArray = newReceita.nomeMedicamento.split("!!");
-      console.log("1.");
       //Guardar todos os renova recebidos num array
       var renovaArray = [];
       renovaArray = newReceita.renova.split("!!");
       //Guardar todas as posologias recebidas num array
-      console.log("2");
       var posologiaArray = [];
       posologiaArray = newReceita.posologia.split("!!");
       //Guardar todas as quantidades recebidos num array
-      console.log("3");
       var quantidadeArray = [];
       quantidadeArray = newReceita.quantidade.split("!!");
-      console.log("4");
 
 
       let duracaoMedicamentoArray = [];
-      console.log(medicamentosArray.length)
 
-      for (let i = 0; i < medicamentosArray.length - 1; i++) {
-        const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE nome ='" + medicamentosArray[i] + "';";
+      for (let i = 0; i < medicamentosArray.length - 1; i++) { //Itera por cada linha recebida da receita
+        const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE nome ='" + medicamentosArray[i] + "';"; 
         const rows1 = await conn.query(selecionar1);
         console.log("Select " + i + " Executado. Inicio Loop " + i + ".");
 
-        //apagar quando testado
-        console.log("Embalagem: " + rows1[0].embalagem);
-        console.log("Dosagem: " + rows1[0].dosagem);
-        console.log("Forma: " + rows1[0].formaFarmaceutica);
-
-        if (rows1[i].formaFarmaceutica === "Comprimido") {
-          let dias = rows1[0].embalagem / newReceita.diariamente;
+        if (rows1[0].formaFarmaceutica === "Comprimido") {
+          let dias = rows1[0].embalagem / diariamenteArray[i];
           var duracaoMedicamento = dias * 86400;
           duracaoMedicamentoArray.push(duracaoMedicamento);
           console.log("Duracao do Medicamento (comprimido): " + duracaoMedicamento);
@@ -433,19 +420,19 @@ app.post('/registarReceita', jsonParser, (req, res) => {
           duracaoMedicamentoArray.push(duracaoMedicamento);
           console.log("Duracao do Medicamento (xarope): " + duracaoMedicamento);
         }
-        console.log("Fim do loop " + i + ".");
+        console.log("Fim do loop " + i + ".\n");
       }
       //Fim
 
       //Inicio - Obter segundos desde 1970
       var d = new Date();
       var dataEmissao = Math.round(d.getTime() / 1000);
-      console.log("Data Emissão:" + dataEmissao);
+      console.log("Data Emissão:" + dataEmissao + "\n");
       //Fim
 
       //Se nao renovar é necessário ver a validade da receita
       var validadeReceitaArray = [];
-      for (let i = 0; i < medicamentosArray.length; i++) {
+      for (let i = 0; i < medicamentosArray.length - 1; i++) {
         console.log("Inicio Loop " + i + ".");
         if (renovaArray[i] === "t") {
           validadeReceitaArray.push(0);
@@ -454,23 +441,25 @@ app.post('/registarReceita', jsonParser, (req, res) => {
           validadeReceitaArray.push(dataEmissao + (duracaoMedicamentoArray[i] * quantidadeArray[i]));
           console.log("Validade da Receita: " + validadeReceitaArray[i]);
         }
-        console.log("Fim do loop " + i + ".");
+        console.log("Fim do loop " + i + ".\n");
       }
 
       //Fim
 
 
       //Registar uma receita na base de dados
-      for (let i = 0; i < medicamentosArray.length; i++) { //FAZER SELECT DO NOME COM O ARRAY MEDICAMENTOS
-        const selecionar1 = "SELECT idMedicamento FROM medicamento WHERE nome = " + medicamentosArray[i] + ";";
+      for (let i = 0; i < medicamentosArray.length - 1; i++) {
+        const selecionar1 = "SELECT idMedicamento FROM medicamento WHERE nome = '" + medicamentosArray[i] + "';";
         const rows1 = await conn.query(selecionar1);
+
         console.log("Inicio Loop Inserir " + i + ".");
-        const string = "INSERT INTO receita values (" + NULL + ", " + nReceita + ", " + newReceita.numeroDeUtente + ", " + newReceita.idMedico + ", " + rows1[0].nome + ", '" + posologiaArray[i] + "', " + dataEmissao + ", " + duracaoMedicamentoArray[i] + ", " + validadeReceitaArray[i] + ", " + 0 + ", 'f', '" + renovaArray[i] + "', " + quantidadeArray[i] + ")";
-        console.log("Insert inicio.");
-        let respo = await conn.query(string);
+        let x = "INSERT INTO receita values ( NULL, " + nReceita + ", " + newReceita.numeroDeUtente + ", " + medico + ", " + rows1[0].idMedicamento + ", '" + posologiaArray[i] + "', " + dataEmissao + ", " + duracaoMedicamentoArray[i] + ", " + validadeReceitaArray[i] + ", " + 0 + ", 'f', '" + renovaArray[0] + "', " + quantidadeArray[i] + ");";
+        
+
+        let respo = await conn.query(x);
         console.log("Insert fim. Fim do loop " + i + ".");
       }
-      res.status(200).send();
+      res.send({ mensagem: "adicionado" });
     }
     catch (err) {
       res.status(400).send();
@@ -480,15 +469,16 @@ app.post('/registarReceita', jsonParser, (req, res) => {
   registoMedicamento();
 
 });
-//
-//
-//
-//------------------------------------------------------------->   FIM DE MEDICOS
-//
-//
-//------------------------------------------------------------->   FARMACEUTICOS
-//
-//
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+//                                                      ⬇️Farmácia
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
 // Devolver numero do cartao de utente e receitas!!!!!!!!!!!!!! e estado de levantamento
 app.post('/verificarReceita', jsonParser, (req, res) => {
 
@@ -527,19 +517,15 @@ app.post('/verificarReceita', jsonParser, (req, res) => {
 // Select -> renova e validade
 
 
-//------------------------------------------------------------->   FIM DE FARMACEUTICOS
-//
-//
-//-------------------------
-//
-//
-//-------------------------
-//
-//
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+//                                                      ⬇Fim de Funções para Farmácia
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
 //Mantem o rest a funcionar através da porta 3000 usando express
 app.listen(PORTA);
 console.log("Server Ligado");
-//
-//
-//
-//

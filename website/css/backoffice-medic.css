@@ -297,6 +297,7 @@ select:focus{
 
 .quantidade-value{
   width: 50px;
+  text-align: center;
 }
 
 .posologia-text{
@@ -363,4 +364,5 @@ input, select{
 
 input.quantidade-diaria{
   width: 50px;
+  text-align: center;
 }
