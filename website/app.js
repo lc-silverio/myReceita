@@ -382,10 +382,10 @@ app.post('/registarReceita', jsonParser, (req, res) => {
       const selecionar = "SELECT MAX(nReceita)FROM receita;";
       let rows = await conn.query(selecionar);
       console.log("Select Executado.");
+      console.log(idMedico)
       var nReceita = rows[0].nReceita + 1;
       //Fim
       console.log("aqui");
-
       //Para verificar a forma farmaceutica, dosagem e embalagem do medicamento da receita --> (Necessario para contas duracaoMedicamento)
       //Guardar todos os medicamentos recebidos num array
 

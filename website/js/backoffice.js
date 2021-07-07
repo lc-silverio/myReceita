@@ -1,6 +1,5 @@
 //VARIAVEIS GLOBAIS
 var counter = 0; //Para as linhas da receita
-var bolacha; //Cookies
 var bolachinha; //Cookies
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -85,7 +84,6 @@ function logout() { //Auto explicativa
 
   //limpa as variáveis globais
   counter = 0;
-  bolacha = 0;
   bolachinha = 0;
 }
 
@@ -243,7 +241,8 @@ function medFetchMain() {//Executa ao clicar no "Adicionar Linha" e vai buscar a
     }
   })
 
-  console.log(getCookieValue("id"))
+  bolachinha = getCookieValue("id")
+  //console.log(bolachinha)
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -262,7 +261,7 @@ function registarReceita() {
 
 
   //idMedicamento = "" E agora ???????? 
-  console.log(counter)
+  console.log(bolachinha)
 
   do {
     medicamentoString = medicamentoString.concat(document.getElementById(`medicamento-dropdown${counter}`).value + "!!");
@@ -288,7 +287,7 @@ function registarReceita() {
       quantidadeString: quantidadeString,
       quantidadeDiariaString: quantidadeDiariaString,
       posologiaString: posologiaString,
-      idMedico: bolachinha.value,
+      idMedico: bolachinha,
       numeroDeUtente: document.getElementById("id-paciente").value,
       renova: renova
     })
