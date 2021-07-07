@@ -91,6 +91,13 @@ function logout() { //Auto explicativa
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
+function getCookieValue(name) { //Vai buscar os cookies disponiveis e limpa a palha desnecessária para ficar com o id do funcionário
+  let result = document.cookie.match("(^|[^;]+)\\s*" + name + "\\s*=\\s*([^;]+)")
+  return result ? result.pop() : ""
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
 
 //                                                      FIM DE FUNÇÕES DE FRONT-END
 //                                                        INICIO DE BACKEND CALLS
@@ -131,7 +138,7 @@ function verificarLogin() { //Verifica se não há campos vazios no form de logi
   if (identificacao == "" || pass == "") {
     window.alert("Cédula Profissional ou palavra-passe incorreta. Por favor tente novamente.")
   } else {
-    document.cookie = document.getElementById("cedulaProfissional").value
+    document.cookie = `id = ${document.getElementById("cedulaProfissional").value}`
     login()
   }
 }
@@ -236,8 +243,7 @@ function medFetchMain() {//Executa ao clicar no "Adicionar Linha" e vai buscar a
     }
   })
 
-  bolacha = document.cookie.split(" ");
-  bolachinha = bolacha[1];
+  console.log(getCookieValue("id"))
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -290,4 +296,3 @@ function registarReceita() {
 
   });
 }
-
