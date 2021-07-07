@@ -369,7 +369,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
     renova: req.body.renova,
     forma: req.body.formaString,
     quantidade: req.body.quantidadeString,
-    diariamente: req.body.tomaDiariaString
+    diariamente: req.body.quantidadeDiariaString
   }
 
 

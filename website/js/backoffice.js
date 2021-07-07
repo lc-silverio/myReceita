@@ -1,6 +1,6 @@
 //VARIAVEIS GLOBAIS
 var counter = 0; //Para as linhas da receita
-var bolachinha; //Cookies
+var bolacha; //Cookies
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
@@ -84,7 +84,7 @@ function logout() { //Auto explicativa
 
   //limpa as variáveis globais
   counter = 0;
-  bolachinha = 0;
+  bolacha = 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -241,8 +241,8 @@ function medFetchMain() {//Executa ao clicar no "Adicionar Linha" e vai buscar a
     }
   })
 
-  bolachinha = getCookieValue("id")
-  //console.log(bolachinha)
+  bolacha = getCookieValue("id")
+  //console.log(bolacha)
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -253,17 +253,17 @@ function registarReceita() {
   var quantidadeDiariaString = "";
   var posologiaString = "";
 
-  if ((document.getElementById("auto-renov").checked) === true) {
+  if ((document.getElementById("auto-renov").checked) === true) {//Verifica o estado da checkbox e atribui um valor consoante o estado checked = t / unchecked = f
     renova = "t"
   } else {
     renova = "f"
   }
 
 
-  //idMedicamento = "" E agora ???????? 
-  console.log(bolachinha)
+  //idMedicamento = "" Não está a ser enviado/usado no backend - era nomeMedicamento
+  //console.log(bolacha) //Cookie
 
-  do {
+  do {// Loop pelo array de itens na receita para criar uma string que é enviada no body do json
     medicamentoString = medicamentoString.concat(document.getElementById(`medicamento-dropdown${counter}`).value + "!!");
     quantidadeString = quantidadeString.concat(document.getElementById(`quantidade-value${counter}`).value + "!!");
     quantidadeDiariaString = quantidadeDiariaString.concat(document.getElementById(`quantidade-diaria${counter}`).value + "!!");
@@ -272,8 +272,8 @@ function registarReceita() {
     counter--
   } while (counter != -1)
 
-  counter = 0;
-  clearInput();
+  counter = 0; //Limpa o contador de linhas
+  clearInput(); //Limpa as linhas
 
 
 
@@ -287,7 +287,7 @@ function registarReceita() {
       quantidadeString: quantidadeString,
       quantidadeDiariaString: quantidadeDiariaString,
       posologiaString: posologiaString,
-      idMedico: bolachinha,
+      idMedico: bolacha,
       numeroDeUtente: document.getElementById("id-paciente").value,
       renova: renova
     })
