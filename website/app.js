@@ -8,16 +8,16 @@ const app = express();
 const PORTA = 3000;
 
 
-//Luis
+//Informa o express qual é a pasta a servir quando o script do servidor for executado
 app.use(express.static('../website'))
 app.use(express.urlencoded());
 
-// Parse JSON bodies (as sent by API clients)
+// Leitura de JSON bodies enviados pelos clientes
 app.use(express.json());
 
 //
 //
-//Usamos para realizar a connexao à BD cada vez que existe uma comunicação rest
+//Usamos para realizar a ligação à BD cada vez que existe uma comunicação rest
 const pool = mariadb.createPool({
   host: 'localhost',
   user: 'root',
