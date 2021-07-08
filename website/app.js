@@ -290,7 +290,7 @@ app.post('/verificarPaciente', jsonParser, (req, res) => {
       console.log("verificarPaciente: Procura executada.");
 
       if (rows[0] != null) {// Se encontrar o cartão de utente recebido, envia de volta o nome do utente
-        console.log("verificarPaciente: Cartão de utente encontrado."); 
+        console.log("verificarPaciente: Cartão de utente encontrado.");
         res.json({ 'status': '200', nomeUtente: rows[0].nome });
       } else {
         console.log("verificarPaciente: Erro SQL - Cartão de utente não encontrado");//Erro
@@ -376,7 +376,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
       const nReceita = rows[0].MaxValues + 1; //Usa o resultado obtido a adiciona +1 ao resultado
 
-      const selecionar1 = "SELECT idFuncionario FROM funcionario WHERE cedulaProfissional = " + newReceita.idMedico +";"; //Formula da query
+      const selecionar1 = "SELECT idFuncionario FROM funcionario WHERE cedulaProfissional = " + newReceita.idMedico + ";"; //Formula da query
       let rows1 = await conn.query(selecionar1); //Executa a query para ir buscar o id do funcionário a quem pertence a cédula profissional
       var medico = rows1[0].idFuncionario;
 
@@ -403,7 +403,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
       let duracaoMedicamentoArray = [];
 
       for (let i = 0; i < medicamentosArray.length - 1; i++) { //Itera por cada linha recebida da receita
-        const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE nome ='" + medicamentosArray[i] + "';"; 
+        const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE nome ='" + medicamentosArray[i] + "';";
         const rows1 = await conn.query(selecionar1);
         console.log("Select " + i + " Executado. Inicio Loop " + i + ".");
 
@@ -414,7 +414,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
           console.log("Duracao do Medicamento (comprimido): " + duracaoMedicamento);
         } else {
           //Assumimos 15ml como toma de uma colher de sopa --> (calculado em excesso para os que têm toma inferior)
-          let tomaDiaria = 15 * newReceita.diariamente;
+          let tomaDiaria = 15 * diariamenteArray[i];
           let dias = rows1[0].dosagem / tomaDiaria;
           var duracaoMedicamento = dias * 86400;
           duracaoMedicamentoArray.push(duracaoMedicamento);
@@ -454,7 +454,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
         console.log("Inicio Loop Inserir " + i + ".");
         let x = "INSERT INTO receita values ( NULL, " + nReceita + ", " + newReceita.numeroDeUtente + ", " + medico + ", " + rows1[0].idMedicamento + ", '" + posologiaArray[i] + "', " + dataEmissao + ", " + duracaoMedicamentoArray[i] + ", " + validadeReceitaArray[i] + ", " + 0 + ", 'f', '" + renovaArray[0] + "', " + quantidadeArray[i] + ");";
-        
+
 
         let respo = await conn.query(x);
         console.log("Insert fim. Fim do loop " + i + ".");
