@@ -38,6 +38,12 @@ function clearInput() {
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
+function clearInputFarm() {
+  location.reload();
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
 function addNewLine() { //Adiciona nova linha à tabela da receita do médico - Associada ao botão "Adicionar Linha"
   counter++;
 
@@ -118,13 +124,13 @@ function login() {
       password: document.getElementById("password").value
     })
   }).then(async (resposta) => {
-    const X = await resposta.json();
+    const incoming = await resposta.json();
 
-    if (X.mensagem == "medic") {//Verifica o tipo de função e envia para o backoffice respectivo ou apresenta erro
+    if (incoming.mensagem == "medic") {//Verifica o tipo de função e envia para o backoffice respectivo ou apresenta erro
       window.location = "backoffice-medic.html" //Backoffice medico
-    } else if (X.mensagem == "farm") {
+    } else if (incoming.mensagem == "farm") {
       window.location = "backoffice-farm.html" //Backoffice farmamácia
-    } else if (X.mensagem == "erro") {
+    } else if (incoming.mensagem == "erro") {
       window.alert("Cédula Profissional ou palavra-passe incorreta. Por favor tente novamente.")
     }
   });
@@ -172,12 +178,12 @@ function userFetch() {
       paciente: document.getElementById("id-paciente").value,//Envia o cartão de utente fornecido ao servidor
     })
   }).then(async (resposta) => {
-    const X = await resposta.json();//Recebe a resposta
+    const incoming = await resposta.json();//Recebe a resposta
 
-    if (X.mensagem == "erro") {
+    if (incoming.mensagem == "erro") {
       window.alert("Cartão de Utente não reconhecido. Por favor tente novamente.")//Erro
     } else {
-      document.getElementById("nome-paciente").value = X.nomeUtente;//Preenche o nome do utente na receita
+      document.getElementById("nome-paciente").value = incoming.nomeUtente;//Preenche o nome do utente na receita
     }
 
   });
@@ -196,10 +202,10 @@ function medFetch() {
       medicamento: document.getElementById(`medicamento-dropdown0`).value,
     })
   }).then(async (resposta) => {
-    const X = await resposta.json(); //Recebe a lista dos documentos numa string delimitada por !!
+    const incoming = await resposta.json(); //Recebe a lista dos documentos numa string delimitada por !!
 
     //MEDICAMENTOS
-    var nomeString = X.nome.split("!!")//Separa os dados recebidos para um array usando os !! como delimitadores
+    var nomeString = incoming.nome.split("!!")//Separa os dados recebidos para um array usando os !! como delimitadores
     nomeString.splice(nomeString.length - 1)
 
     var nomeStringClean = nomeString.filter((c, index) => {
@@ -230,10 +236,10 @@ function medFetchMain() {
       medicamento: document.getElementById("medicamento-dropdown0").value,
     })
   }).then(async (resposta) => {
-    const X = await resposta.json(); //Recebe a lista dos documentos numa string delimitada por !!
+    const incoming = await resposta.json(); //Recebe a lista dos documentos numa string delimitada por !!
 
     //MEDICAMENTOS
-    var nomeString = X.nome.split("!!") //Separa os dados recebidos para um array usando os !! como delimitadores
+    var nomeString = incoming.nome.split("!!") //Separa os dados recebidos para um array usando os !! como delimitadores
     nomeString.splice(nomeString.length - 1)
 
     var nomeStringClean = nomeString.filter((c, index) => {
@@ -307,14 +313,79 @@ function registarReceita() {
       })
     }).then(async (resposta) => {
 
-      const X = await resposta.json();
+      const incoming = await resposta.json();
 
       //Confirma que recebeu um ok do servidor antes de informar que a receita foi submetida na BD.
-      if (X.mensagem == "adicionado") {
+      if (incoming.mensagem == "adicionado") {
         window.alert("Receita emitida com sucesso") //Woop Woop
       }
 
     });
     clearInput(); //Limpa as linhas
   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+function receitaFetch() {
+  console.log(idReceita.value)
+
+  fetch('/verificarReceita', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      numeroReceita: document.getElementById('idReceita').value,
+    })
+  }).then(async (resposta) => {
+    const incoming = await resposta.json();//Recebe a resposta
+
+    if (incoming.mensagem == "erro") {
+      window.alert("Receita não encontrada. Por favor tente novamente.")//Erro
+    } else {
+
+      //Nome utente
+      var nomeUtenteArray = incoming.nomeUtente.split("!!")
+      var nomeUtente = nomeUtenteArray[0]
+      document.getElementById("cartaoutente").value = nomeUtente;//Preenche o nome do utente na receita
+
+
+      //Medicamento
+      var nomeMedicamentoArray = incoming.nomeMedicamento.split("!!")
+      var nomeMedicamento = nomeMedicamentoArray[0]
+      document.getElementById("medicamento-dropdown").innerHTML = nomeMedicamento;
+
+      //Dosagem
+      var dosagemArray = incoming.dosagem.split("!!")
+      var dosagem = dosagemArray[0]
+      document.getElementById("dosagem-dropdown").innerHTML = dosagem;
+
+      //Forma Farmaceutica
+      var formaArray = incoming.formaFarmaceutica.split("!!")
+      var formaFarmaceutica = formaArray[0]
+      document.getElementById("forma-dropdown").innerHTML = formaFarmaceutica;
+
+      //Quantidade de embalagens
+      var quantidadeArray = incoming.quantidade.split("!!")
+      var quantidade = quantidadeArray[0]
+      document.getElementById("quantidade-value").innerHTML = quantidade;
+
+      //Posologia - Indicações de toma
+      var posologiaArray = incoming.posologia.split("!!")
+      var posologia = posologiaArray[0]
+      document.getElementById("posologia-text").innerHTML = posologia;
+
+      //Levantado/Levantamento
+      var levantadoArray = incoming.levantado.split("!!")
+      var levantado = levantadoArray[0]
+
+      if (levantado == "t") {
+        document.getElementById("levantado").checked = true;
+      } else if (levantado == "f") {
+        document.getElementById("levantado").checked = false;
+      }
+    }
+
+  });
 }

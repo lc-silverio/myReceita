@@ -372,7 +372,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
       const selecionar = "SELECT MAX(nReceita) AS MaxValues FROM receita;"; //Formula da query
       let rows = await conn.query(selecionar);// Executa a query para ir buscar o numero da ultima receita emitida
 
-      console.log("Registar receita - nova receita no fundo da lista");
+      console.log("Registar receita - nova receita adicionada à lista");
 
       const nReceita = rows[0].MaxValues + 1; //Usa o resultado obtido a adiciona +1 ao resultado
 
@@ -405,7 +405,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
       for (let i = 0; i < medicamentosArray.length - 1; i++) { //Itera por cada linha recebida da receita
         const selecionar1 = "SELECT formaFarmaceutica, dosagem, embalagem FROM medicamento WHERE nome ='" + medicamentosArray[i] + "';";
         const rows1 = await conn.query(selecionar1);
-        console.log("Select " + i + " Executado. Inicio Loop " + i + ".");
+        //console.log("Select " + i + " Executado. Inicio Loop " + i + ".");
 
         if (rows1[0].formaFarmaceutica === "Comprimido") {
           let dias = rows1[0].embalagem / diariamenteArray[i];
@@ -420,7 +420,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
           duracaoMedicamentoArray.push(duracaoMedicamento);
           console.log("Duracao do Medicamento (xarope): " + duracaoMedicamento);
         }
-        console.log("Fim do loop " + i + ".\n");
+        //console.log("Fim do loop " + i + ".\n");
       }
       //Fim
 
@@ -433,7 +433,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
       //Se nao renovar é necessário ver a validade da receita
       var validadeReceitaArray = [];
       for (let i = 0; i < medicamentosArray.length - 1; i++) {
-        console.log("Inicio Loop " + i + ".");
+        //console.log("Inicio Loop " + i + ".");
         if (renovaArray[i] === "t") {
           validadeReceitaArray.push(0);
           console.log("Renova = t");
@@ -441,7 +441,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
           validadeReceitaArray.push(dataEmissao + (duracaoMedicamentoArray[i] * quantidadeArray[i]));
           console.log("Validade da Receita: " + validadeReceitaArray[i]);
         }
-        console.log("Fim do loop " + i + ".\n");
+        //console.log("Fim do loop " + i + ".\n");
       }
 
       //Fim
@@ -452,12 +452,12 @@ app.post('/registarReceita', jsonParser, (req, res) => {
         const selecionar1 = "SELECT idMedicamento FROM medicamento WHERE nome = '" + medicamentosArray[i] + "';";
         const rows1 = await conn.query(selecionar1);
 
-        console.log("Inicio Loop Inserir " + i + ".");
+        //console.log("Inicio Loop Inserir " + i + ".");
         let x = "INSERT INTO receita values ( NULL, " + nReceita + ", " + newReceita.numeroDeUtente + ", " + medico + ", " + rows1[0].idMedicamento + ", '" + posologiaArray[i] + "', " + dataEmissao + ", " + duracaoMedicamentoArray[i] + ", " + validadeReceitaArray[i] + ", " + 0 + ", 'f', '" + renovaArray[0] + "', " + quantidadeArray[i] + ");";
 
 
         let respo = await conn.query(x);
-        console.log("Insert fim. Fim do loop " + i + ".");
+        //console.log("Insert fim. Fim do loop " + i + ".");
       }
       res.send({ mensagem: "adicionado" });
     }
@@ -477,46 +477,130 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
+//Leitura de uma receita 
 
+app.post('/verificarReceita', jsonParser, (req, res) => {//Recebe o id da receita e devolve o conteudo da mesma e o nome do proprietário
 
-// Devolver numero do cartao de utente e receitas!!!!!!!!!!!!!! e estado de levantamento
-app.post('/verificarReceita', jsonParser, (req, res) => {
-
-  const newPaciente = {
-    numeroReceita: req.query.numeroReceita
+  const newReceita = {
+    numeroReceita: req.body.numeroReceita, //Recebe o numero da receita do backoffice
   }
 
-
+  //Obter segundos desde 1970
+  var d = new Date();
+  var seconds = Math.round(d.getTime() / 1000);
+  //console.log("segundos: " + seconds);
 
   async function autenticar() {
     try {
       let conn = await pool.getConnection();
-      const selecionar = "SELECT cartaoUtente FROM paciente WHERE cartaoUtente = " + newPaciente.numeroUtente + ";";
+      const sel = "SELECT cartaoUtente, idMedicamento FROM receita WHERE nReceita = " + newReceita.numeroReceita + ";";
+      let row = await conn.query(sel);
+
+      const selecionar = "SELECT receita.idMedicamento, receita.validadeReceita, receita.nReceita, receita.dataEmissao, receita.duracaoMedicamento, receita.primeiroLevantamento, receita.renova, receita.ultimoLevantamento, medicamento.dosagem, medicamento.nome, medicamento.formaFarmaceutica, receita.posologia, receita.quantidade, medicamento.precoMaximo FROM medicamento join receita WHERE receita.idMedicamento = " + row[0].idMedicamento + " AND receita.nReceita = " + newReceita.numeroReceita + " AND medicamento.idMedicamento = " + row[0].idMedicamento + ";";
       let rows = await conn.query(selecionar);
-      console.log("Select Executado.");
-      if (rows[0] != null) {
-        console.log("Conta autenticada.");
-        res.json({ 'status': '200', numeroUtente: rows[0].numeroDeUtente });
-      } else {
-        console.log("ERRO X");
-        res.status(400).send();
+
+      //Vai buscar o nome do dono da receita com base no id da receita e no cartão de utente
+      const query = "SELECT paciente.nome FROM paciente JOIN receita ON receita.cartaoUtente = paciente.cartaoUtente WHERE receita.idReceita = " + newReceita.numeroReceita + ";";
+      let nomeReceita = await conn.query(query);
+      let nomeUtente = nomeReceita[0].nome
+      //console.log(`Receita em nome de: ${nomeUtente}`)
+
+
+      let idString = "";
+      let nomeString = "";
+      let precoString = "";
+      let formaFarmaceuticaString = "";
+      let dosagemString = "";
+      let posologiaString = "";
+      let embalagemString = "";
+      let levantamentoString = "";
+
+      for (let i = 0; i < rows.length; i++) {
+
+        if (rows[i].renova == "t") {
+
+          //verificamos se ja foi efetuado o primeiro levantamento da receita
+          if (rows[i].primeiroLevantamento == "t") {
+
+
+            //seconds - 432000 para disponibilizar a receita 5 dias antes de acabar
+            //verificamos se ultimoLevantamento + duracao do medicamento é superior ao dia atual - 5 dias
+            if (rows[i].ultimoLevantamento + rows[i].duracaoMedicamento < (seconds - 432000)) {
+              idString += rows[i].nReceita + "!!";
+              nomeString += rows[i].nome + "!!";
+              precoString += rows[i].precoMaximo + "!!";
+              formaFarmaceuticaString += rows[i].formaFarmaceutica + "!!";
+              dosagemString += rows[i].dosagem + "!!";
+              posologiaString += rows[i].posologia + "!!";
+              embalagemString += rows[i].quantidade + "!!";
+              levantamentoString += rows[i].primeiroLevantamento + "!!";
+            }
+
+          } else {
+
+            //verificamos se dataEmissao + duracao do medicamento é superior ao dia atual - 5 dias
+            if (rows[i].dataEmissao + rows[i].duracaoMedicamento > (seconds - 432000)) {
+              idString += rows[i].nReceita + "!!";
+              nomeString += rows[i].nome + "!!";
+              precoString += rows[i].precoMaximo + "!!";
+              formaFarmaceuticaString += rows[i].formaFarmaceutica + "!!";
+              dosagemString += rows[i].dosagem + "!!";
+              posologiaString += rows[i].posologia + "!!";
+              embalagemString += rows[i].quantidade + "!!";
+              levantamentoString += rows[i].primeiroLevantamento + "!!";
+            }
+
+          }
+        } else {
+          //console.log("segundos" + seconds)
+          //console.log(rows[i].validadeReceita)
+
+          //Verifica se o dia atual é superior à validade da receita
+          if (seconds > rows[i].validadeReceita) {
+
+            //Verifica se nunca foi levantada
+            if (rows[i].primeiroLevantamento == "f") {
+              idString += rows[i].nReceita + "!!";
+              nomeString += rows[i].nome + "!!";
+              precoString += rows[i].precoMaximo + "!!";
+              formaFarmaceuticaString += rows[i].formaFarmaceutica + "!!";
+              dosagemString += rows[i].dosagem + "!!";
+              posologiaString += rows[i].posologia + "!!";
+              embalagemString += rows[i].quantidade + "!!";
+              levantamentoString += rows[i].primeiroLevantamento + "!!";
+            }
+          }
+        }
+
       }
-    } catch (err) {
-      console.log("ERRO Y");
-      res.status(400).send();
+
+      //console.log(idString + "\n" + nomeString + "\n" + precoString + "\n" + formaFarmaceuticaString + "\n" + dosagemString + "\n" + embalagemString + "\n" + nomeUtente);
+      res.json({
+        'status': '200',
+        id: idString,
+        nomeUtente: nomeUtente,
+        nomeMedicamento: nomeString,
+        dosagem: dosagemString,
+        formaFarmaceutica: formaFarmaceuticaString,
+        quantidade: embalagemString,
+        posologia: posologiaString,
+        levantado: levantamentoString,
+        //cartaoUtente: row[0].cartaoUtente, 
+        //precoMaximo: precoString, 
+      });
+
+      pool.end;
+    }
+    catch (err) {
+      //console.log(err);
+      console.log("Receita - ID não encontrado/Erro");
+      res.send({ mensagem: "erro" })
     }
   }
 
   autenticar();
 
 });
-//
-//
-// Das-me id e Recebes v
-// Select -> medicamento: nome, dosagem, forma; receita: quantidade e psologia
-// Select -> renova e validade
-
-
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 
@@ -526,6 +610,6 @@ app.post('/verificarReceita', jsonParser, (req, res) => {
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 
-//Mantem o rest a funcionar através da porta 3000 usando express
+//Mantem o servidor a funcionar através da porta 3000 usando express js
 app.listen(PORTA);
 console.log("Server Ligado");

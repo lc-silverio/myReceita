@@ -359,3 +359,11 @@ a{
 input, select{
   cursor: pointer;
 }
+
+#levantado{
+  margin-top: 2px;
+}
+
+tr span{
+  color: black;
+}
