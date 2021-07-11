@@ -328,7 +328,6 @@ function registarReceita() {
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 function receitaFetch() {
-  console.log(idReceita.value)
 
   fetch('/verificarReceita', {
     method: 'POST',
@@ -342,8 +341,15 @@ function receitaFetch() {
     const incoming = await resposta.json();//Recebe a resposta
 
     if (incoming.mensagem == "erro") {
-      window.alert("Receita não encontrada. Por favor tente novamente.")//Erro
-    } else {
+      window.alert("Receita não encontrada. Por favor confirme o ID e tente novamente.")//Erro
+      clearInputFarm();
+    } else if(incoming.mensagem == "validade"){
+      window.alert("Receita pedida já expirou. Por favor confirme o ID e tente novamente.")//Erro
+      clearInputFarm();
+    }else if(incoming.mensagem == "levantada"){
+      window.alert("Receita pedida já foi levantada. Por favor confirme o ID e tente novamente.")//Erro
+      clearInputFarm();
+    }else {
 
       //Nome utente
       var nomeUtenteArray = incoming.nomeUtente.split("!!")
