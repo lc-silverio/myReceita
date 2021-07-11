@@ -320,7 +320,7 @@ app.post('/medicamentos', jsonParser, (req, res) => {
       const selecionar = "SELECT nome, dosagem, formaFarmaceutica FROM medicamento;"; //Formula da query
       let rows = await conn.query(selecionar); // Executa a query
 
-      console.log("Medicamentos-dropdown: Listagem dos medicamentos executada.\n");
+      console.log("Medicamentos-dropdown: Listagem inicial dos medicamentos executada.\n");
 
       //Inicializar as strings a enviar
       let nomeString = ""; //Nome do medicamento
@@ -489,8 +489,28 @@ app.post('/verificarReceita', jsonParser, (req, res) => {//Recebe o id da receit
 
       console.log(`Receitas - Consultar receita ${newReceita.numeroReceita} \n`)
 
-      const selecionar = "SELECT receita.idMedicamento, receita.validadeReceita, receita.nReceita, receita.dataEmissao, receita.duracaoMedicamento, receita.primeiroLevantamento, receita.renova, receita.ultimoLevantamento, medicamento.dosagem, medicamento.nome, medicamento.formaFarmaceutica, receita.posologia, receita.quantidade, medicamento.precoMaximo FROM medicamento join receita WHERE receita.idMedicamento = " + row[0].idMedicamento + " AND receita.nReceita = " + newReceita.numeroReceita + " AND medicamento.idMedicamento = " + row[0].idMedicamento + ";";
+      const selecionar = `
+      SELECT 
+        receita.idMedicamento, 
+        receita.validadeReceita, 
+        receita.nReceita, 
+        receita.dataEmissao, 
+        receita.duracaoMedicamento, 
+        receita.primeiroLevantamento,
+        receita.renova, 
+        receita.ultimoLevantamento, 
+        medicamento.dosagem, 
+        medicamento.nome, 
+        medicamento.formaFarmaceutica, 
+        receita.posologia, 
+        receita.quantidade, 
+        medicamento.precoMaximo 
+
+      FROM medicamento join receita 
+      WHERE receita.idMedicamento = ${row[0].idMedicamento} AND receita.nReceita = ${newReceita.numeroReceita} AND medicamento.idMedicamento = ${row[0].idMedicamento};
+      `//Fim da query
       let rows = await conn.query(selecionar);
+
 
       //Vai buscar o nome do dono da receita com base no id da receita e no cartão de utente
       const query = "SELECT paciente.nome FROM paciente JOIN receita ON receita.cartaoUtente = paciente.cartaoUtente WHERE receita.idReceita = " + newReceita.numeroReceita + ";";
@@ -583,6 +603,51 @@ app.post('/verificarReceita', jsonParser, (req, res) => {//Recebe o id da receit
   autenticar();
 
 });
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+//Actualizar estado de levantamento
+
+app.post('/levantamentoUpdate', jsonParser, (req, res) => {
+
+  const newLevantamento = {//Recebe o json com os dados do pedido
+    numeroReceita: req.body.numeroReceita, //Numero do cartão de utente
+    levantamento: req.body.levantamento //Numero do cartão de utente
+  }
+
+  async function autenticar() {
+    try {
+      let conn = await pool.getConnection(); //Liga à base de dados
+      const query = `SELECT primeiroLevantamento FROM receita WHERE nReceita = ${newLevantamento.numeroReceita};` 
+      let check = await conn.query(query); 
+      var levantamento = check[0].primeiroLevantamento;
+
+      if(levantamento == "t"){
+        console.log("Atualizar receita: Receita já levantada\n");
+        console.log(err)
+        res.send({ mensagem: "levantado" })
+      }else{
+        let x = `
+          UPDATE receita 
+          SET primeiroLevantamento = 't'
+          WHERE nReceita = ${newLevantamento.numeroReceita};
+        `
+
+        let respo = await conn.query(x);
+        res.send({ mensagem: "actualizado" });
+        console.log(`updateReceita - Receita ${newLevantamento.numeroReceita} actualizada\n`)
+      }
+
+    } catch (err) {
+      console.log("updateReceita: Erro não definido\n");
+      console.log(err)
+      res.send({ mensagem: "erro" })
+    }
+  }
+
+  autenticar();
+
+});
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
 
@@ -594,4 +659,4 @@ app.post('/verificarReceita', jsonParser, (req, res) => {//Recebe o id da receit
 
 //Mantem o servidor a funcionar através da porta 3000 usando express js
 app.listen(PORTA);
-console.log("Server Ligado");
+console.log("\nServer Ligado");

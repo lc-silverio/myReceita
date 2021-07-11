@@ -395,3 +395,38 @@ function receitaFetch() {
 
   });
 }
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+//Actualiza o levantamento de receitas
+
+function levantamentoUpdate() {
+
+  let token=""
+
+  if (document.getElementById("levantado").checked = true) {
+    token = "t"
+  } else if (document.getElementById("levantado").checked = false) {
+    token = "f"
+  }
+
+  fetch('/levantamentoUpdate', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      numeroReceita: document.getElementById('idReceita').value,
+      levantamento: token,
+    })
+  }).then(async (resposta) => {
+    const incoming = await resposta.json();//Recebe a resposta
+
+    if (incoming.mensagem == "erro") {
+      window.alert("Erro. Por favor tente novamente.")//Erro
+    } else {
+      window.alert("Estado de levantamento atualizado.")
+      clearInputFarm();
+    }
+
+  });
+}
