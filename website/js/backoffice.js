@@ -295,7 +295,7 @@ function registarReceita() {
 
   //Verifica se existem dados em todas as caixas antes de submeter
   if ((posologiaString.length <= 2) || (quantidadeDiariaString.length < 1) || (medicamentoString.length < 3) || (quantidadeString.length < 1)) {
-    window.alert("Erro no preenchimento de receita. Por favor tente novamente.")
+    window.alert("Erro no preenchimento de receita. Por favor tente novamente.")//Erro
   } else {
     fetch('/registarReceita', {
       method: 'POST',
@@ -329,106 +329,106 @@ function registarReceita() {
 
 function receitaFetch() {
 
-  fetch('/verificarReceita', {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      numeroReceita: document.getElementById('idReceita').value,
-    })
-  }).then(async (resposta) => {
-    const incoming = await resposta.json();//Recebe a resposta
+  if (document.getElementById('idReceita').value == '') {
+    window.alert("Receita inválida. Por favor tente novamente.")//Erro
+  } else {
+    fetch('/verificarReceita', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        numeroReceita: document.getElementById('idReceita').value,
+      })
+    }).then(async (resposta) => {
+      const incoming = await resposta.json();//Recebe a resposta
 
-    if (incoming.mensagem == "erro") {
-      window.alert("Receita não encontrada. Por favor confirme o ID e tente novamente.")//Erro
-      clearInputFarm();
-    } else if (incoming.mensagem == "validade") {
-      window.alert("Receita pedida já expirou. Por favor confirme o ID e tente novamente.")//Erro
-      clearInputFarm();
-    } else if (incoming.mensagem == "levantada") {
-      window.alert("Receita pedida já foi levantada. Por favor confirme o ID e tente novamente.")//Erro
-      clearInputFarm();
-    } else {
-      var nomeMedicamentoArray = incoming.nomeMedicamento.split("!!")
-      nomeMedicamentoArray.pop()
-      var counter = nomeMedicamentoArray.length
-      console.log(counter)
+      var nomeMedicamentoArray = incoming.nomeMedicamento.split("!!") //Recebe a string com os medicamentos
+      nomeMedicamentoArray.pop() //Remove os elementos vazios criados pelos delimitadores
+      var counter = nomeMedicamentoArray.length //Conta a quantidade de remedios na receita para saber quantas linhas adicionar à receita e quantas vezes iterar sobre a lista para preencher os dados no backoffice 
 
-      //Limpa as linhsa da tabela antes de adicionar as linhas da nova receita
-      var tb = document.getElementById('table');
-      while (tb.rows.length > 1) {
-        tb.deleteRow(1);
-      }
+      if (counter == 0) {
+        window.alert("Receita indisponivel")//Erro
+        clearInputFarm();
+      } else {
+        console.log(counter)
 
-      for (var i = 0; i < counter; i++) {
-        var table = document.getElementById("table");
-        var row = table.insertRow(1); // nova linha
+        //Limpa as linhas da tabela antes de adicionar as linhas da nova receita
+        var tb = document.getElementById('table');
+        while (tb.rows.length > 1) {
+          tb.deleteRow(1);
+        }
 
-        var cell1 = row.insertCell(0); //medicamento
-        var cell2 = row.insertCell(1); // quantidade embalagem
-        var cell3 = row.insertCell(2); // quantidade diaria
-        var cell4 = row.insertCell(3); // posologia
-        var cell5 = row.insertCell(4); // apagar
-        var cell6 = row.insertCell(5); // apagar
+        for (var i = 0; i < counter; i++) {
+          var table = document.getElementById("table");
+          var row = table.insertRow(1); // Nova linha
 
-        cell1.innerHTML = `<span class="data" name="medicamento-dropdown" id="medicamento-dropdown${counter}"></span>`;/*Medicamento*/
+          var cell1 = row.insertCell(0); // Nome medicamento
+          var cell2 = row.insertCell(1); // Dosagem
+          var cell3 = row.insertCell(2); // Forma farmaceutica
+          var cell4 = row.insertCell(3); // Quantidade de embalagens
+          var cell5 = row.insertCell(4); // Posologia
+          var cell6 = row.insertCell(5); // Levantamento
 
-        cell2.innerHTML = `<span class="data" name="dosagem-dropdown" id="dosagem-dropdown${counter}"></span>`;//Dosagem
+          cell1.innerHTML = `<span class="data" name="medicamento-dropdown" id="medicamento-dropdown${i}"></span>`;//Medicamento
 
-        cell3.innerHTML = `<span class="data" name="forma-dropdown" id="forma-dropdown${counter}"></span>`;//Forma
+          cell2.innerHTML = `<span class="data" name="dosagem-dropdown" id="dosagem-dropdown${i}"></span>`;//Dosagem
 
-        cell4.innerHTML = `<span class="data" type="number" name="quantidade-value" id="quantidade-value${counter}"></span>`;//Quantidade
+          cell3.innerHTML = `<span class="data" name="forma-dropdown" id="forma-dropdown${i}"></span>`;//Forma
 
-        cell5.innerHTML = `<span class="data" type="text" name="posologia-text" id="posologia-text${counter}"></span>`;//Posologia
+          cell4.innerHTML = `<span class="data" type="number" name="quantidade-value" id="quantidade-value${i}"></span>`;//Quantidade de embalagens
 
-        cell6.innerHTML = `<input type="checkbox" name="levantado" id="levantado${counter}">`;//Levantamento
+          cell5.innerHTML = `<span class="data" type="text" name="posologia-text" id="posologia-text${i}"></span>`;//Posologia
+
+          cell6.innerHTML = `<input type="checkbox" name="levantado" id="levantado${i}">`;//Levantamento
 
 
-        //Nome utente
-        var nomeUtenteArray = incoming.nomeUtente.split("!!")
-        var nomeUtente = nomeUtenteArray[0]
-        document.getElementById("cartaoutente").value = nomeUtente;//Preenche o nome do utente na receita
+          //Nome utente
+          var nomeUtenteArray = incoming.nomeUtente.split("!!")
+          var nomeUtente = nomeUtenteArray[0]
+          document.getElementById("cartaoutente").value = nomeUtente;//Preenche o nome do utente na receita
 
-        //Medicamento
-        var nomeMedicamentoArray = incoming.nomeMedicamento.split("!!")
-        //console.log(nomeMedicamentoArray)
-        var nomeMedicamento = nomeMedicamentoArray[i]
-        document.getElementById(`medicamento-dropdown${counter}`).innerHTML = nomeMedicamento;
+          //Medicamento
+          var nomeMedicamentoArray = incoming.nomeMedicamento.split("!!")
+          //console.log(nomeMedicamentoArray)
+          var nomeMedicamento = nomeMedicamentoArray[i]
+          document.getElementById(`medicamento-dropdown${i}`).innerHTML = nomeMedicamento;
 
-        //Dosagem
-        var dosagemArray = incoming.dosagem.split("!!")
-        var dosagem = dosagemArray[i]
-        document.getElementById(`dosagem-dropdown${counter}`).innerHTML = dosagem;
+          //Dosagem
+          var dosagemArray = incoming.dosagem.split("!!")
+          var dosagem = dosagemArray[i]
+          document.getElementById(`dosagem-dropdown${i}`).innerHTML = dosagem;
 
-        //Forma Farmaceutica
-        var formaArray = incoming.formaFarmaceutica.split("!!")
-        var formaFarmaceutica = formaArray[i]
-        document.getElementById(`forma-dropdown${counter}`).innerHTML = formaFarmaceutica;
+          //Forma Farmaceutica
+          var formaArray = incoming.formaFarmaceutica.split("!!")
+          var formaFarmaceutica = formaArray[i]
+          document.getElementById(`forma-dropdown${i}`).innerHTML = formaFarmaceutica;
 
-        //Quantidade de embalagens
-        var quantidadeArray = incoming.quantidade.split("!!")
-        var quantidade = quantidadeArray[i]
-        document.getElementById(`quantidade-value${counter}`).innerHTML = quantidade;
+          //Quantidade de embalagens
+          var quantidadeArray = incoming.quantidade.split("!!")
+          var quantidade = quantidadeArray[i]
+          document.getElementById(`quantidade-value${i}`).innerHTML = quantidade;
 
-        //Posologia - Indicações de toma
-        var posologiaArray = incoming.posologia.split("!!")
-        var posologia = posologiaArray[i]
-        document.getElementById(`posologia-text${counter}`).innerHTML = posologia;
+          //Posologia - Indicações de toma
+          var posologiaArray = incoming.posologia.split("!!")
+          var posologia = posologiaArray[i]
+          document.getElementById(`posologia-text${i}`).innerHTML = posologia;
 
-        //Levantado/Levantamento
-        var levantadoArray = incoming.levantado.split("!!")
-        var levantado = levantadoArray[i]
+          //Levantado/Levantamento
+          var levantadoArray = incoming.levantado.split("!!")
+          var levantado = levantadoArray[i]
 
-        if (levantado == "t") {
-          document.getElementById(`levantado${counter}`).checked = true;
-        } else if (levantado == "f") {
-          document.getElementById(`levantado${counter}`).checked = false;
+          if (levantado == "t") {
+            document.getElementById(`levantado${i}`).checked = true;//Levantado
+          } else if (levantado == "f") {
+            document.getElementById(`levantado${i}`).checked = false;//Não levantado
+          }
+
         }
       }
-    }
 
-  });
+    });
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -436,12 +436,25 @@ function receitaFetch() {
 
 function levantamentoUpdate() {
 
-  let token = ""
+  var nomeMed //Nome medicamentos
+  var nomeMedClean //Nome dos medicamentos sem lixo
+  var token = ""
 
-  if (document.getElementById("levantado").checked = true) {
-    token = "t"
-  } else if (document.getElementById("levantado").checked = false) {
-    token = "f"
+  var counter = document.getElementById("table").rows.length; //Vai buscar  numero de linhas na receita
+  counter -= 1; //ATENÇÃO RETORNA COM +1 POR CAUSA DOS HEADERS
+
+  for (let i = 0; i < counter; i++) { //Uma volta por cada linha
+
+    //Verifica estado de levantamento
+    if (document.getElementById(`levantado${i}`).checked == true) {
+      token += "t!!"
+    } else if (document.getElementById(`levantado${i}`).checked == false) {
+      token += "f!!"
+    } //Adiciona T ou F ao token por cada linha da receita consoante o estado de levantamento for True(Verdadeiro = Levantado) ou False (Falso = Não levantado)
+
+    //Nome do medicamento
+    nomeMed += document.getElementById(`medicamento-dropdown${i}`).textContent + "!!";//Agrupa todos os nomes dos medicamentos numa string com !! como delimitador
+    nomeMedClean = nomeMed.replace('undefined', '')//Remove lixo que possa aparecer
   }
 
   fetch('/levantamentoUpdate', {
@@ -450,17 +463,19 @@ function levantamentoUpdate() {
       'Content-type': 'application/json'
     },
     body: JSON.stringify({
-      numeroReceita: document.getElementById('idReceita').value,
-      levantamento: token,
+      numeroReceita: document.getElementById('idReceita').value, //ID da receita, obtido do input do user
+      nomeMedicamento: nomeMedClean, //String com o nome dos medicamentos
+      levantamento: token, //String com os tokens do estado de levantamento obtidos da checkbox
     })
   }).then(async (resposta) => {
     const incoming = await resposta.json();//Recebe a resposta
 
     if (incoming.mensagem == "erro") {
       window.alert("Erro. Por favor tente novamente.")//Erro
+      clearInputFarm();//Limpa os dados no ecrã
     } else {
-      window.alert("Estado de levantamento atualizado.")
-      clearInputFarm();
+      window.alert("Estado de levantamento atualizado.")//Receita actualizada
+      clearInputFarm();//Limpa os dados no ecrã
     }
 
   });
