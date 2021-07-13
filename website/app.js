@@ -467,9 +467,11 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< VAIS RECEBER SEMPRE UM JSON COM RECEITAS OU UM JSON COM MENSAGEM "erro"
 //Leitura de uma receita 
 
-app.post('/verificarReceita', jsonParser, (req, res) => {//Recebe o id da receita e devolve o conteudo da mesma e o nome do proprietário
+app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da receita e devolve o conteudo da mesma e o nome do proprietário
   console.log("Receitas - Pedido recebido\n")
 
   const newReceita = {
@@ -487,35 +489,22 @@ app.post('/verificarReceita', jsonParser, (req, res) => {//Recebe o id da receit
       const sel = "SELECT cartaoUtente, idMedicamento FROM receita WHERE nReceita = " + newReceita.numeroReceita + ";";
       let row = await conn.query(sel);
 
+      var idMedicamentoArray = []
+      var cartaoUtenteNovo = row[0].cartaoUtente
+
+      for(let i = 0; i < row.length; i++){
+        idMedicamentoArray.push(row[i].idMedicamento)
+      }
       console.log(`Receitas - Consultar receita ${newReceita.numeroReceita} \n`)
-
-      const selecionar = `
-      SELECT 
-        receita.idMedicamento, 
-        receita.validadeReceita, 
-        receita.nReceita, 
-        receita.dataEmissao, 
-        receita.duracaoMedicamento, 
-        receita.primeiroLevantamento,
-        receita.renova, 
-        receita.ultimoLevantamento, 
-        medicamento.dosagem, 
-        medicamento.nome, 
-        medicamento.formaFarmaceutica, 
-        receita.posologia, 
-        receita.quantidade, 
-        medicamento.precoMaximo 
-
-      FROM medicamento join receita 
-      WHERE receita.idMedicamento = ${row[0].idMedicamento} AND receita.nReceita = ${newReceita.numeroReceita} AND medicamento.idMedicamento = ${row[0].idMedicamento};
-      `//Fim da query
-      let rows = await conn.query(selecionar);
 
 
       //Vai buscar o nome do dono da receita com base no id da receita e no cartão de utente
-      const query = "SELECT paciente.nome FROM paciente JOIN receita ON receita.cartaoUtente = paciente.cartaoUtente WHERE receita.idReceita = " + newReceita.numeroReceita + ";";
-      let nomeReceita = await conn.query(query);
-      let nomeUtente = nomeReceita[0].nome
+      let nomeUtente;
+      const sel3 = "SELECT nome FROM paciente WHERE cartaoUtente = " + cartaoUtenteNovo + ";";
+      let row3 = await conn.query(sel3);
+      nomeUtente = row3[0].nome;
+      //
+
 
       //Para Enviar
       let idString = "";
@@ -527,75 +516,93 @@ app.post('/verificarReceita', jsonParser, (req, res) => {//Recebe o id da receit
       let embalagemString = "";
       let levantamentoString = "";
 
-      for (let i = 0; i < rows.length; i++) {
 
-        if (rows[0].primeiroLevantamento == "t") { //Verifica se a receita já foi levantada
-          console.log("Receita - Receita pedida já foi levantada\n");
-          res.send({ mensagem: "levantada" })
+      for(let i = 0; i < idMedicamentoArray.length; i++){
+        const sel1 = "SELECT validadeReceita, nReceita, dataEmissao, duracaoMedicamento, primeiroLevantamento, renova, ultimoLevantamento, posologia, quantidade FROM receita WHERE nReceita = " + newReceita.numeroReceita + " AND idMedicamento = " + idMedicamentoArray[i] + ";";
+        let row1 = await conn.query(sel1);
+        const sel2 = "SELECT dosagem, nome, formaFarmaceutica, precoMaximo FROM medicamento WHERE idMedicamento = " + idMedicamentoArray[i] + ";";
+        let row2 = await conn.query(sel2);
 
-        } else if (rows[0].primeiroLevantamento == "f") {//Caso ainda não tenha sido levantada
-          if (rows[0].renova == "f") { //Caso não seja uma receita de renovação automática
-            //Caso  seja uma receita de renovação automática
-            let teste = rows[0].dataEmissao + rows[0].duracaoMedicamento
-
-            if (rows[0].validadeReceita <= teste) {
-              console.log("Receita - Receita pedida já expirou\n");
-              res.send({ mensagem: "validade" })
-
-            } else {//Receita já expirou
-              idString += rows[i].nReceita + "!!";
-              nomeString += rows[i].nome + "!!";
-              precoString += rows[i].precoMaximo + "!!";
-              formaFarmaceuticaString += rows[i].formaFarmaceutica + "!!";
-              dosagemString += rows[i].dosagem + "!!";
-              posologiaString += rows[i].posologia + "!!";
-              embalagemString += rows[i].quantidade + "!!";
-              levantamentoString += rows[i].primeiroLevantamento + "!!";
-
-              res.json({
-                'status': '200',
-                id: idString,
-                nomeUtente: nomeUtente,
-                nomeMedicamento: nomeString,
-                dosagem: dosagemString,
-                formaFarmaceutica: formaFarmaceuticaString,
-                quantidade: embalagemString,
-                posologia: posologiaString,
-                levantado: levantamentoString,
-              });
+        /*console.log("row1.length" + row1.length)
+        console.log("row2.length" + row2.length)
+        console.log("row1[i].renova - "+ row1[0].renova);
+        console.log("row1[i].primeiroLevantamento - " + row1[0].primeiroLevantamento);
+        console.log("(row1[i].ultimoLevantamento + row1[i].duracaoMedicamento) - " + (row1[0].ultimoLevantamento + row1[0].duracaoMedicamento));
+        console.log("(row1[i].dataEmissao + row1[i].duracaoMedicamento) - " + (row1[0].dataEmissao + row1[0].duracaoMedicamento));
+        console.log("row1[i].validadeReceita - " + row1[0].validadeReceita);
+        console.log("row1[i].primeiroLevantamento - " + row1[0].primeiroLevantamento);*/
+        if (row1[0].renova === "t") {
+          //console.log("534")
+          if (row1[0].primeiroLevantamento === "t") {
+            console.log("536")
+            if ((row1[0].ultimoLevantamento + row1[0].duracaoMedicamento) < (seconds - 432000)) {
+              console.log("538")
+              idString += row1[0].nReceita + "!!";
+              nomeString += row2[0].nome + "!!";
+              precoString += row2[0].precoMaximo + "!!";
+              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!";
+              dosagemString += row2[0].dosagem + "!!";
+              posologiaString += row1[0].posologia + "!!";
+              embalagemString += row1[0].quantidade + "!!";
+              levantamentoString += row1[0].primeiroLevantamento + "!!";
             }
-          } else {//Caso  seja uma receita de renovação automática
-            idString += rows[i].nReceita + "!!";
-            nomeString += rows[i].nome + "!!";
-            precoString += rows[i].precoMaximo + "!!";
-            formaFarmaceuticaString += rows[i].formaFarmaceutica + "!!";
-            dosagemString += rows[i].dosagem + "!!";
-            posologiaString += rows[i].posologia + "!!";
-            embalagemString += rows[i].quantidade + "!!";
-            levantamentoString += rows[i].primeiroLevantamento + "!!";
-
-            res.json({
-              'status': '200',
-              id: idString,
-              nomeUtente: nomeUtente,
-              nomeMedicamento: nomeString,
-              dosagem: dosagemString,
-              formaFarmaceutica: formaFarmaceuticaString,
-              quantidade: embalagemString,
-              posologia: posologiaString,
-              levantado: levantamentoString,
-            });
+          } else {
+            //console.log("549")
+            //verificamos se dataEmissao + duracao do medicamento é superior ao dia atual - 5 dias
+            if ((row1[0].dataEmissao + row1[0].duracaoMedicamento) > (seconds - 432000)) {
+              //console.log("552")
+              idString += row1[0].nReceita + "!!";
+              nomeString += row2[0].nome + "!!";
+              precoString += row2[0].precoMaximo + "!!";
+              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!";
+              dosagemString += row2[0].dosagem + "!!";
+              posologiaString += row1[0].posologia + "!!";
+              embalagemString += row1[0].quantidade + "!!";
+              levantamentoString += row1[0].primeiroLevantamento + "!!";
+            }
           }
-
+        } else {
+          //console.log("564")
+          //Verifica se o dia atual é superior à validade da receita
+          if (seconds < row1[0].validadeReceita) {
+            //console.log("567")
+            //Verifica se nunca foi levantada
+            if (row1[0].primeiroLevantamento == "f") {
+              //console.log("570")
+              idString += row1[0].nReceita + "!!";
+              nomeString += row2[0].nome + "!!";
+              precoString += row2[0].precoMaximo + "!!";
+              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!";
+              dosagemString += row2[0].dosagem + "!!";
+              posologiaString += row1[0].posologia + "!!";
+              embalagemString += row1[0].quantidade + "!!";
+              levantamentoString += row1[0].primeiroLevantamento + "!!";
+            }
+          }
         }
-
       }
+
+
+      console.log(`idString: ${idString}, nomeString: ${nomeString}, precoString: ${precoString}, formaFarmaceuticaString: ${formaFarmaceuticaString}, dosagemString:${dosagemString}, embalagemString:${embalagemString}, nomeUtente:${nomeUtente}`);
+      res.json({
+        'status': '200',
+        id: idString,
+        nomeUtente: nomeUtente,
+        nomeMedicamento: nomeString,
+        dosagem: dosagemString,
+        formaFarmaceutica: formaFarmaceuticaString,
+        quantidade: embalagemString,
+        posologia: posologiaString,
+        levantado: levantamentoString,
+        //cartaoUtente: row[0].cartaoUtente, 
+        //precoMaximo: precoString, 
+      });
 
       pool.end;
     }
     catch (err) {
       //console.log(err);
-      console.log("Receita - Receita não encontrada/Erro\n");
+      console.log("\n" + err);
       res.send({ mensagem: "erro" })
     }
   }
@@ -605,36 +612,61 @@ app.post('/verificarReceita', jsonParser, (req, res) => {//Recebe o id da receit
 });
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
+// TENHO DE RECEBER TAMBEM OS NOMES MEDICAMENTO
+// TEM DE RECEBER TODOS OS VALORES EM ARRAY'S
+// TEM DE RECEBER F QUANDO NAO É FEITO LEVANTAMENTO
 //Actualizar estado de levantamento
 
 app.post('/levantamentoUpdate', jsonParser, (req, res) => {
 
   const newLevantamento = {//Recebe o json com os dados do pedido
     numeroReceita: req.body.numeroReceita, //Numero do cartão de utente
+    nomeMedicamento: req.body.idMedicamento, //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< NOME MEDICAMENTO
     levantamento: req.body.levantamento //Numero do cartão de utente
   }
+
+  //Inicio - Obter segundos desde 1970
+  var d = new Date();
+  var ultimoLevantamento = Math.round(d.getTime() / 1000);
+  //Fim
+
+  var medicamentosArray = [];
+  medicamentosArray = newLevantamento.nomeMedicamento.split("!!");
+
+  var levantamentosArray = [];
+  levantamentosArray = newLevantamento.levantamento.split("!!");
+
 
   async function autenticar() {
     try {
       let conn = await pool.getConnection(); //Liga à base de dados
-      const query = `SELECT primeiroLevantamento FROM receita WHERE nReceita = ${newLevantamento.numeroReceita};` 
-      let check = await conn.query(query); 
-      var levantamento = check[0].primeiroLevantamento;
 
-      if(levantamento == "t"){
-        console.log("Atualizar receita: Receita já levantada\n");
-        console.log(err)
-        res.send({ mensagem: "levantado" })
-      }else{
-        let x = `
-          UPDATE receita 
-          SET primeiroLevantamento = 't'
-          WHERE nReceita = ${newLevantamento.numeroReceita};
-        `
+      var idsMedicamentosArray = [];
 
-        let respo = await conn.query(x);
-        res.send({ mensagem: "actualizado" });
-        console.log(`updateReceita - Receita ${newLevantamento.numeroReceita} actualizada\n`)
+      for(let i = 0; i < medicamentosArray.length; i++){
+        const query = `SELECT idMedicamento FROM medicamento WHERE nome = ${medicamentosArray[i]};` 
+        let check = await conn.query(query);
+        idsMedicamentosArray.push(check[0].idMedicamento)
+      } 
+
+
+      for(let i = 0; i < idsMedicamentosArray.length; i++){
+        const query = `SELECT primeiroLevantamento FROM receita WHERE nReceita = ${newLevantamento.numeroReceita} AND idMedicamento = ${idsMedicamentosArray[i]};` 
+        let check = await conn.query(query);
+
+        if(check[0].primeiroLevantamento == "t"){
+          console.log("Atualizar receita: Receita já levantada\n");
+          res.send({ mensagem: "levantado" })
+        }else{
+          let x = `
+            UPDATE receita 
+            SET primeiroLevantamento = 't', ultimoLevantamento = ${ultimoLevantamento}
+            WHERE nReceita = ${newLevantamento.numeroReceita} AND idMedicamento = ${idsMedicamentosArray[i]};
+          `
+          let respo = await conn.query(x);
+          res.send({ mensagem: "actualizado" });
+          console.log(`updateReceita - Receita ${newLevantamento.numeroReceita} actualizada\n`)
+        }
       }
 
     } catch (err) {

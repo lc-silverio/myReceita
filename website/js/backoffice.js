@@ -343,53 +343,88 @@ function receitaFetch() {
     if (incoming.mensagem == "erro") {
       window.alert("Receita não encontrada. Por favor confirme o ID e tente novamente.")//Erro
       clearInputFarm();
-    } else if(incoming.mensagem == "validade"){
+    } else if (incoming.mensagem == "validade") {
       window.alert("Receita pedida já expirou. Por favor confirme o ID e tente novamente.")//Erro
       clearInputFarm();
-    }else if(incoming.mensagem == "levantada"){
+    } else if (incoming.mensagem == "levantada") {
       window.alert("Receita pedida já foi levantada. Por favor confirme o ID e tente novamente.")//Erro
       clearInputFarm();
-    }else {
-
-      //Nome utente
-      var nomeUtenteArray = incoming.nomeUtente.split("!!")
-      var nomeUtente = nomeUtenteArray[0]
-      document.getElementById("cartaoutente").value = nomeUtente;//Preenche o nome do utente na receita
-
-
-      //Medicamento
+    } else {
       var nomeMedicamentoArray = incoming.nomeMedicamento.split("!!")
-      var nomeMedicamento = nomeMedicamentoArray[0]
-      document.getElementById("medicamento-dropdown").innerHTML = nomeMedicamento;
+      nomeMedicamentoArray.pop()
+      var counter = nomeMedicamentoArray.length
+      console.log(counter)
 
-      //Dosagem
-      var dosagemArray = incoming.dosagem.split("!!")
-      var dosagem = dosagemArray[0]
-      document.getElementById("dosagem-dropdown").innerHTML = dosagem;
+      //Limpa as linhsa da tabela antes de adicionar as linhas da nova receita
+      var tb = document.getElementById('table');
+      while (tb.rows.length > 1) {
+        tb.deleteRow(1);
+      }
 
-      //Forma Farmaceutica
-      var formaArray = incoming.formaFarmaceutica.split("!!")
-      var formaFarmaceutica = formaArray[0]
-      document.getElementById("forma-dropdown").innerHTML = formaFarmaceutica;
+      for (var i = 0; i < counter; i++) {
+        var table = document.getElementById("table");
+        var row = table.insertRow(1); // nova linha
 
-      //Quantidade de embalagens
-      var quantidadeArray = incoming.quantidade.split("!!")
-      var quantidade = quantidadeArray[0]
-      document.getElementById("quantidade-value").innerHTML = quantidade;
+        var cell1 = row.insertCell(0); //medicamento
+        var cell2 = row.insertCell(1); // quantidade embalagem
+        var cell3 = row.insertCell(2); // quantidade diaria
+        var cell4 = row.insertCell(3); // posologia
+        var cell5 = row.insertCell(4); // apagar
+        var cell6 = row.insertCell(5); // apagar
 
-      //Posologia - Indicações de toma
-      var posologiaArray = incoming.posologia.split("!!")
-      var posologia = posologiaArray[0]
-      document.getElementById("posologia-text").innerHTML = posologia;
+        cell1.innerHTML = `<span class="data" name="medicamento-dropdown" id="medicamento-dropdown${counter}"></span>`;/*Medicamento*/
 
-      //Levantado/Levantamento
-      var levantadoArray = incoming.levantado.split("!!")
-      var levantado = levantadoArray[0]
+        cell2.innerHTML = `<span class="data" name="dosagem-dropdown" id="dosagem-dropdown${counter}"></span>`;//Dosagem
 
-      if (levantado == "t") {
-        document.getElementById("levantado").checked = true;
-      } else if (levantado == "f") {
-        document.getElementById("levantado").checked = false;
+        cell3.innerHTML = `<span class="data" name="forma-dropdown" id="forma-dropdown${counter}"></span>`;//Forma
+
+        cell4.innerHTML = `<span class="data" type="number" name="quantidade-value" id="quantidade-value${counter}"></span>`;//Quantidade
+
+        cell5.innerHTML = `<span class="data" type="text" name="posologia-text" id="posologia-text${counter}"></span>`;//Posologia
+
+        cell6.innerHTML = `<input type="checkbox" name="levantado" id="levantado${counter}">`;//Levantamento
+
+
+        //Nome utente
+        var nomeUtenteArray = incoming.nomeUtente.split("!!")
+        var nomeUtente = nomeUtenteArray[0]
+        document.getElementById("cartaoutente").value = nomeUtente;//Preenche o nome do utente na receita
+
+        //Medicamento
+        var nomeMedicamentoArray = incoming.nomeMedicamento.split("!!")
+        //console.log(nomeMedicamentoArray)
+        var nomeMedicamento = nomeMedicamentoArray[i]
+        document.getElementById(`medicamento-dropdown${counter}`).innerHTML = nomeMedicamento;
+
+        //Dosagem
+        var dosagemArray = incoming.dosagem.split("!!")
+        var dosagem = dosagemArray[i]
+        document.getElementById(`dosagem-dropdown${counter}`).innerHTML = dosagem;
+
+        //Forma Farmaceutica
+        var formaArray = incoming.formaFarmaceutica.split("!!")
+        var formaFarmaceutica = formaArray[i]
+        document.getElementById(`forma-dropdown${counter}`).innerHTML = formaFarmaceutica;
+
+        //Quantidade de embalagens
+        var quantidadeArray = incoming.quantidade.split("!!")
+        var quantidade = quantidadeArray[i]
+        document.getElementById(`quantidade-value${counter}`).innerHTML = quantidade;
+
+        //Posologia - Indicações de toma
+        var posologiaArray = incoming.posologia.split("!!")
+        var posologia = posologiaArray[i]
+        document.getElementById(`posologia-text${counter}`).innerHTML = posologia;
+
+        //Levantado/Levantamento
+        var levantadoArray = incoming.levantado.split("!!")
+        var levantado = levantadoArray[i]
+
+        if (levantado == "t") {
+          document.getElementById(`levantado${counter}`).checked = true;
+        } else if (levantado == "f") {
+          document.getElementById(`levantado${counter}`).checked = false;
+        }
       }
     }
 
@@ -401,7 +436,7 @@ function receitaFetch() {
 
 function levantamentoUpdate() {
 
-  let token=""
+  let token = ""
 
   if (document.getElementById("levantado").checked = true) {
     token = "t"
