@@ -1,11 +1,11 @@
-const express = require("express");
-const mariadb = require('mariadb');
-const bodyParser = require('body-parser');
-var jsonParser = bodyParser.json();
+const express = require("express"); //Serve a pagina web
+const mariadb = require('mariadb'); //Serve a Base de Dados
+const bodyParser = require('body-parser'); //Leitura de dados do corpo do html
+var jsonParser = bodyParser.json(); //Leitura de dados do corpo do html
 //
 //
-const app = express();
-const PORTA = 3000;
+const app = express(); //Invoca o Express JS
+const PORTA = 3000; //Porta default
 
 
 //Informa o express qual é a pasta a servir quando o script do servidor for executado
@@ -17,7 +17,7 @@ app.use(express.json());
 
 //
 //
-//Usamos para realizar a ligação à BD cada vez que existe uma comunicação rest
+//Configuração da ligação à BD para as comunicações rest
 const pool = mariadb.createPool({
   host: 'localhost',
   user: 'root',
@@ -336,7 +336,7 @@ app.post('/medicamentos', jsonParser, (req, res) => {
       res.json({ 'status': '200', nome: nomeString, dosagem: dosagemString, formaFarmaceutica: formaFarmaceuticaString });//Envia os dados
 
     } catch (err) {
-      console.log("Medicamentos - Erro não especificado / BD timeout - Demasiadas queries\n"); //
+      console.log("Medicamentos - Erro não especificado / BD timeout - Demasiadas queries\n"); //Erro
       res.status(400).send();
     }
   }
@@ -360,8 +360,6 @@ app.post('/registarReceita', jsonParser, (req, res) => {
     quantidade: req.body.quantidadeString, //Quantidade de embalagens
     diariamente: req.body.quantidadeDiariaString //Quantida de comprimidos/ xarope a tomar por dia
   }
-
-
 
   async function registoMedicamento() {
     try {
@@ -398,7 +396,6 @@ app.post('/registarReceita', jsonParser, (req, res) => {
       var quantidadeArray = [];
       quantidadeArray = newReceita.quantidade.split("!!");
 
-
       let duracaoMedicamentoArray = [];
 
       for (let i = 0; i < medicamentosArray.length - 1; i++) { //Itera por cada linha recebida da receita
@@ -417,12 +414,10 @@ app.post('/registarReceita', jsonParser, (req, res) => {
           duracaoMedicamentoArray.push(duracaoMedicamento);
         }
       }
-      //Fim
 
       //Inicio - Obter segundos desde 1970
       var d = new Date();
       var dataEmissao = Math.round(d.getTime() / 1000);
-      //Fim
 
       //Se nao renovar é necessário ver a validade da receita
       var validadeReceitaArray = [];
@@ -462,7 +457,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
-//Leitura de uma receita 
+//Leitura de uma receita - OK
 
 app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da receita e devolve o conteudo da mesma e o nome do proprietário
   console.log("Receitas - Pedido recebido\n")
@@ -480,7 +475,7 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
     try {
       let conn = await pool.getConnection();//Ligação à BD
       const sel = "SELECT cartaoUtente, idMedicamento FROM receita WHERE nReceita = " + newReceita.numeroReceita + ";";
-      let row = await conn.query(sel);//Vai buscar à BD o cartão de utente e a lista dos medicamentos na receita
+      let row = await conn.query(sel); //Vai buscar à BD o cartão de utente e a lista dos medicamentos na receita
 
       var idMedicamentoArray = []
       var cartaoUtenteNovo = row[0].cartaoUtente
@@ -500,17 +495,17 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
 
 
       //Para Enviar
-      let idString = "";
-      let nomeString = "";
-      let precoString = "";
-      let formaFarmaceuticaString = "";
-      let dosagemString = "";
-      let posologiaString = "";
-      let embalagemString = "";
-      let levantamentoString = "";
+      let idString = ""; // ID da receita
+      let nomeString = ""; //Nome dos Medicamentos
+      let precoString = ""; //Preço Máximo
+      let formaFarmaceuticaString = ""; //Forma Farmaceutica
+      let dosagemString = ""; //Dosagem
+      let posologiaString = ""; //Posologia
+      let embalagemString = ""; //Quantidade de Embalagens
+      let levantamentoString = ""; //Estado de Levantamento
 
 
-      for (let i = 0; i < idMedicamentoArray.length; i++) {//Vai buscar todos os dados à BD
+      for (let i = 0; i < idMedicamentoArray.length; i++) {//Vai buscar todos os dados à BD por cada linha
         const sel1 = `
           SELECT validadeReceita, 
             nReceita,  
@@ -523,9 +518,9 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
             quantidade 
           FROM receita 
           WHERE nReceita = ${newReceita.numeroReceita} AND idMedicamento = ${idMedicamentoArray[i]};`;
+          let row1 = await conn.query(sel1);
 
-
-        let row1 = await conn.query(sel1);
+        
         const sel2 = `
         SELECT 
           dosagem, 
@@ -540,26 +535,26 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
         if (row1[0].renova === "t") {
           if (row1[0].primeiroLevantamento === "t") {
             if ((row1[0].ultimoLevantamento + row1[0].duracaoMedicamento) < (seconds - 432000)) {
-              idString += row1[0].nReceita + "!!";
-              nomeString += row2[0].nome + "!!";
-              precoString += row2[0].precoMaximo + "!!";
-              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!";
-              dosagemString += row2[0].dosagem + "!!";
-              posologiaString += row1[0].posologia + "!!";
-              embalagemString += row1[0].quantidade + "!!";
-              levantamentoString += row1[0].primeiroLevantamento + "!!";
+              idString += row1[0].nReceita + "!!"; //ID da receita
+              nomeString += row2[0].nome + "!!"; //Nome dos medicamentos
+              precoString += row2[0].precoMaximo + "!!"; // Preço máximo do medicamento
+              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!"; //Forma Farmaceutica
+              dosagemString += row2[0].dosagem + "!!"; //Dosagem
+              posologiaString += row1[0].posologia + "!!"; //Posologia
+              embalagemString += row1[0].quantidade + "!!"; //Quantidade de embalagens
+              levantamentoString += row1[0].primeiroLevantamento + "!!"; //Estado de levantamento
             }
           } else {
             //verificamos se dataEmissao + duracao do medicamento é superior ao dia atual - 5 dias
             if ((row1[0].dataEmissao + row1[0].duracaoMedicamento) > (seconds - 432000)) {
-              idString += row1[0].nReceita + "!!";
-              nomeString += row2[0].nome + "!!";
-              precoString += row2[0].precoMaximo + "!!";
-              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!";
-              dosagemString += row2[0].dosagem + "!!";
-              posologiaString += row1[0].posologia + "!!";
-              embalagemString += row1[0].quantidade + "!!";
-              levantamentoString += row1[0].primeiroLevantamento + "!!";
+              idString += row1[0].nReceita + "!!"; // ID da receita
+              nomeString += row2[0].nome + "!!"; //Nome dos medicamentos
+              precoString += row2[0].precoMaximo + "!!"; //Preço Máximo
+              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!"; //Forma Farmaceutica
+              dosagemString += row2[0].dosagem + "!!"; //Dosagem
+              posologiaString += row1[0].posologia + "!!"; //Posologia
+              embalagemString += row1[0].quantidade + "!!"; //Quantidade de embalagens
+              levantamentoString += row1[0].primeiroLevantamento + "!!"; //Estado de Levantamento
             }
           }
         } else {
@@ -567,14 +562,14 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
           if (seconds < row1[0].validadeReceita) {
             //Verifica se nunca foi levantada
             if (row1[0].primeiroLevantamento == "f") {
-              idString += row1[0].nReceita + "!!";
-              nomeString += row2[0].nome + "!!";
-              precoString += row2[0].precoMaximo + "!!";
-              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!";
-              dosagemString += row2[0].dosagem + "!!";
-              posologiaString += row1[0].posologia + "!!";
-              embalagemString += row1[0].quantidade + "!!";
-              levantamentoString += row1[0].primeiroLevantamento + "!!";
+              idString += row1[0].nReceita + "!!"; //ID da receita
+              nomeString += row2[0].nome + "!!"; //Nome dos medicamentos
+              precoString += row2[0].precoMaximo + "!!"; //Preço máximo
+              formaFarmaceuticaString += row2[0].formaFarmaceutica + "!!"; //Forma Farmaceutica
+              dosagemString += row2[0].dosagem + "!!"; //Dosagem
+              posologiaString += row1[0].posologia + "!!"; //Posologia
+              embalagemString += row1[0].quantidade + "!!"; //Quantidade de embalagens
+              levantamentoString += row1[0].primeiroLevantamento + "!!"; //Estado de Levantamento
             }
           }
         }
@@ -605,7 +600,7 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
 });
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
-//Actualizar estado de levantamento
+//Actualizar estado de levantamento - OK
 
 app.post('/levantamentoUpdate', jsonParser, (req, res) => {
 
