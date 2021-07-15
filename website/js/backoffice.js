@@ -258,6 +258,11 @@ function medFetchMain() {
 
   bolacha = getCookieValue("id")//Guarda o id do médico numa cookie para utilizar na altura de submeter a receita
 }
+//----------------------------------------------------------------------------------------------------------------------------------------------------->
+//Gerar Cookie para a Farmácia
+function CookieCutter(){
+  bolacha = getCookieValue("id")//Guarda o id do médico numa cookie para utilizar na altura de submeter a receita
+}
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
 
@@ -466,6 +471,7 @@ function levantamentoUpdate() {
       numeroReceita: document.getElementById('idReceita').value, //ID da receita, obtido do input do user
       nomeMedicamento: nomeMedClean, //String com o nome dos medicamentos
       levantamento: token, //String com os tokens do estado de levantamento obtidos da checkbox
+      idFarmaceutico: bolacha, //Cookie com a cédula profissional do farmaceutico que editou a receita
     })
   }).then(async (resposta) => {
     const incoming = await resposta.json();//Recebe a resposta
