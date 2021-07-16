@@ -648,6 +648,8 @@ app.post('/levantamentoUpdate', jsonParser, (req, res) => {
   var ultimoLevantamento = Math.round(d.getTime() / 1000);
   //Fim
 
+
+  console.log(newLevantamento.nomeMedicamento)
   var medicamentosArray = [];
   medicamentosArray = newLevantamento.nomeMedicamento.split("!!");//Separa a string recebida no json em vários elementos que são colocados no array
 
@@ -661,7 +663,7 @@ app.post('/levantamentoUpdate', jsonParser, (req, res) => {
 
       var idsMedicamentosArray = [];
 
-      for(let i = 0; i < medicamentosArray.length -1; i++){
+      for(let i = 0; i < medicamentosArray.length-1; i++){
         const query = "SELECT idMedicamento FROM medicamento WHERE nome = '" + medicamentosArray[i] + "';";//Vai buscar o id dos medicamentos com base no nome dos medicamentos na receita
         let check = await conn.query(query);
         console.log(check[0].idMedicamento)
@@ -676,17 +678,19 @@ app.post('/levantamentoUpdate', jsonParser, (req, res) => {
           console.log("Atualizar receita: Receita já levantada\n");
           res.send({ mensagem: "levantado" })
         }else{
-          let x = `
+          if(levantamentosArray[i] === 't'){
+            let x = `
             UPDATE receita 
             SET primeiroLevantamento = '${levantamentosArray[i]}', ultimoLevantamento = ${ultimoLevantamento}
             WHERE nReceita = ${newLevantamento.numeroReceita} AND idMedicamento = ${idsMedicamentosArray[i]};
-          `//Procura o medicamento a actualizar com base no id da receita e no id do medicamento depois actualiza o estado de cada um dos elementos da receita com base na informação recebida do backoffice.
+            `//Procura o medicamento a actualizar com base no id da receita e no id do medicamento depois actualiza o estado de cada um dos elementos da receita com base na informação recebida do backoffice.
 
-          let respo1 = await conn.query(x);
-
-          let y = `INSERT INTO levantamentos values (NULL, ${newLevantamento.idFarmaceutico}, ${newLevantamento.numeroReceita}, ${ultimoLevantamento});`
-          let respo2 = await conn.query(y);
-          console.log(`updateReceita - Receita ${newLevantamento.numeroReceita} actualizada\n`)//Server side info
+            let respo1 = await conn.query(x);
+            let y = `INSERT INTO levantamentos values (NULL, ${newLevantamento.idFarmaceutico}, ${newLevantamento.numeroReceita}, ${ultimoLevantamento});`
+            let respo2 = await conn.query(y);
+            console.log(`updateReceita - Receita ${newLevantamento.numeroReceita} actualizada\n`)//Server side info
+          }
+          
         }
       }
       
