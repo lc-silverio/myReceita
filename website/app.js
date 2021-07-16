@@ -678,7 +678,7 @@ app.post('/levantamentoUpdate', jsonParser, (req, res) => {
         }else{
           let x = `
             UPDATE receita 
-            SET primeiroLevantamento = 't', ultimoLevantamento = ${ultimoLevantamento}
+            SET primeiroLevantamento = '${levantamentosArray[i]}', ultimoLevantamento = ${ultimoLevantamento}
             WHERE nReceita = ${newLevantamento.numeroReceita} AND idMedicamento = ${idsMedicamentosArray[i]};
           `//Procura o medicamento a actualizar com base no id da receita e no id do medicamento depois actualiza o estado de cada um dos elementos da receita com base na informação recebida do backoffice.
 
