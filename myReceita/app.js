@@ -9,7 +9,7 @@ const PORTA = 3000;
 
 
 //Informa o express qual é a pasta a servir quando o script do servidor for executado
-app.use(express.static('../website'))
+app.use(express.static('../myReceita'))
 app.use(express.urlencoded());
 
 // Leitura de JSON bodies enviados pelos clientes
