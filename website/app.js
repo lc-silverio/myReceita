@@ -1,11 +1,11 @@
-const express = require("express"); //Serve a pagina web
-const mariadb = require('mariadb'); //Serve a Base de Dados
-const bodyParser = require('body-parser'); //Leitura de dados do corpo do html
-var jsonParser = bodyParser.json(); //Leitura de dados do corpo do html
+const express = require("express");
+const mariadb = require('mariadb');
+const bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
 //
 //
-const app = express(); //Invoca o Express JS
-const PORTA = 3000; //Porta default
+const app = express();
+const PORTA = 3000;
 
 
 //Informa o express qual é a pasta a servir quando o script do servidor for executado
@@ -17,7 +17,7 @@ app.use(express.json());
 
 //
 //
-//Configuração da ligação à BD para as comunicações rest
+//Usamos para realizar a ligação à BD cada vez que existe uma comunicação rest
 const pool = mariadb.createPool({
   host: 'localhost',
   user: 'root',
@@ -192,6 +192,7 @@ app.post('/receita', jsonParser, (req, res) => {
 
       //console.log(idString + "\n" +nomeString + "\n" + precoString + "\n" + formaFarmaceuticaString + "\n" + dosagemString + "\n" + embalagemString);
 
+      console.log(idString)
       res.json({ 'status': '200', id: idString, nome: nomeString, precoMaximo: precoString, formaFarmaceutica: formaFarmaceuticaString, dosagem: dosagemString, embalagem: embalagemString });
       pool.end;
     }
@@ -311,6 +312,7 @@ app.post('/verificarPaciente', jsonParser, (req, res) => {
 //Lista de medicamentos (dropdown)  - OK
 //Devolve nome, dosagem e forma farmaceutica de todos os medicamentos (delimitados por !!).
 
+
 app.post('/medicamentos', jsonParser, (req, res) => {
 
   async function autenticar() {
@@ -361,6 +363,8 @@ app.post('/registarReceita', jsonParser, (req, res) => {
     diariamente: req.body.quantidadeDiariaString //Quantida de comprimidos/ xarope a tomar por dia
   }
 
+
+
   async function registoMedicamento() {
     try {
       let conn = await pool.getConnection(); //Liga à base de dados
@@ -396,6 +400,7 @@ app.post('/registarReceita', jsonParser, (req, res) => {
       var quantidadeArray = [];
       quantidadeArray = newReceita.quantidade.split("!!");
 
+
       let duracaoMedicamentoArray = [];
 
       for (let i = 0; i < medicamentosArray.length - 1; i++) { //Itera por cada linha recebida da receita
@@ -414,10 +419,12 @@ app.post('/registarReceita', jsonParser, (req, res) => {
           duracaoMedicamentoArray.push(duracaoMedicamento);
         }
       }
+		   
 
       //Inicio - Obter segundos desde 1970
       var d = new Date();
       var dataEmissao = Math.round(d.getTime() / 1000);
+		   
 
       //Se nao renovar é necessário ver a validade da receita
       var validadeReceitaArray = [];
@@ -430,12 +437,17 @@ app.post('/registarReceita', jsonParser, (req, res) => {
         }
       }
 
+		   
+
+
       //Registar uma receita na base de dados
       for (let i = 0; i < medicamentosArray.length - 1; i++) {
         const selecionar1 = "SELECT idMedicamento FROM medicamento WHERE nome = '" + medicamentosArray[i] + "';";
         const rows1 = await conn.query(selecionar1);
 
         let x = "INSERT INTO receita values ( NULL, " + nReceita + ", " + newReceita.numeroDeUtente + ", " + medico + ", " + rows1[0].idMedicamento + ", '" + posologiaArray[i] + "', " + dataEmissao + ", " + duracaoMedicamentoArray[i] + ", " + validadeReceitaArray[i] + ", " + 0 + ", 'f', '" + newReceita.renova + "', " + quantidadeArray[i] + ");";
+
+
         let respo = await conn.query(x);
       }
       res.send({ mensagem: "adicionado" });
@@ -457,6 +469,8 @@ app.post('/registarReceita', jsonParser, (req, res) => {
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+																																	
 //Leitura de uma receita - OK
 
 app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da receita e devolve o conteudo da mesma e o nome do proprietário
@@ -531,10 +545,13 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
         WHERE idMedicamento = ${idMedicamentoArray[i]};`;
         let row2 = await conn.query(sel2);
 
-
+										  
         if (row1[0].renova === "t") {
+							
           if (row1[0].primeiroLevantamento === "t") {
+							  
             if ((row1[0].ultimoLevantamento + row1[0].duracaoMedicamento) < (seconds - 432000)) {
+								
               idString += row1[0].nReceita + "!!"; //ID da receita
               nomeString += row2[0].nome + "!!"; //Nome dos medicamentos
               precoString += row2[0].precoMaximo + "!!"; // Preço máximo do medicamento
@@ -545,8 +562,10 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
               levantamentoString += row1[0].primeiroLevantamento + "!!"; //Estado de levantamento
             }
           } else {
+							  
             //verificamos se dataEmissao + duracao do medicamento é superior ao dia atual - 5 dias
             if ((row1[0].dataEmissao + row1[0].duracaoMedicamento) > (seconds - 432000)) {
+								
               idString += row1[0].nReceita + "!!"; // ID da receita
               nomeString += row2[0].nome + "!!"; //Nome dos medicamentos
               precoString += row2[0].precoMaximo + "!!"; //Preço Máximo
@@ -558,10 +577,13 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
             }
           }
         } else {
+							
           //Verifica se o dia atual é superior à validade da receita
           if (seconds < row1[0].validadeReceita) {
+							  
             //Verifica se nunca foi levantada
             if (row1[0].primeiroLevantamento == "f") {
+								
               idString += row1[0].nReceita + "!!"; //ID da receita
               nomeString += row2[0].nome + "!!"; //Nome dos medicamentos
               precoString += row2[0].precoMaximo + "!!"; //Preço máximo
@@ -575,6 +597,8 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
         }
       }
 
+
+																																										  
       res.json({
         'status': '200',
         id: idString, //ID da receita
@@ -585,11 +609,14 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
         quantidade: embalagemString, //Quantidadede de caixas
         posologia: posologiaString, //Guia de toma
         levantado: levantamentoString, // Estado de levantamento
+											 
+									
       });
 
       pool.end;
     }
     catch (err) {//Erro
+						 
       console.log("\n" + err);
       res.send({ mensagem: "erro" })
     }
@@ -600,6 +627,9 @@ app.post('/verificarReceita', jsonParser, (req, res) => { //Recebe o id da recei
 });
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
+											   
+											 
+													
 //Actualizar estado de levantamento - OK
 
 app.post('/levantamentoUpdate', jsonParser, (req, res) => {
@@ -607,9 +637,9 @@ app.post('/levantamentoUpdate', jsonParser, (req, res) => {
   const newLevantamento = {//Recebe o json com os dados do pedido
     numeroReceita: req.body.numeroReceita, //Numero da receita
     nomeMedicamento: req.body.nomeMedicamento, //Nome do medicamento
-    levantamento: req.body.levantamento //Estado de levantamento
+    levantamento: req.body.levantamento, //Estado de levantamento
+    idFarmaceutico: req.body.idFarmaceutico //Identificador do Farmaceutico (cockie)
   }
-
 
   //Inicio - Obter segundos desde 1970
   var d = new Date();
@@ -617,20 +647,10 @@ app.post('/levantamentoUpdate', jsonParser, (req, res) => {
   //Fim
 
   var medicamentosArray = [];
-  medicamentosArray = newLevantamento.nomeMedicamento.split("!!")//Separa a string recebida no json em vários elementos que são colocados no array
-
-  const index = medicamentosArray.indexOf('');//Procura elementos vazios no array
-  if (index > -1) {
-    medicamentosArray.splice(index, 1);//Manda fora os elementos vazios derivados de eliminar os !! que usamos como delimitador
-  }
+  medicamentosArray = newLevantamento.nomeMedicamento.split("!!");//Separa a string recebida no json em vários elementos que são colocados no array
 
   var levantamentosArray = [];
   levantamentosArray = newLevantamento.levantamento.split("!!");//Separa a string recebida no json em vários elementos que são colocados no array
-
-  const index2 = levantamentosArray.indexOf('');//Procura elementos vazios no array
-  if (index2 > -1) {
-    levantamentosArray.splice(index, 1);//Manda fora os elementos vazios derivados de eliminar os !! que usamos como delimitador
-  }
 
 
   async function autenticar() {
@@ -639,28 +659,35 @@ app.post('/levantamentoUpdate', jsonParser, (req, res) => {
 
       var idsMedicamentosArray = [];
 
-      for (let i = 0; i < medicamentosArray.length; i++) {
-        const query = `SELECT idMedicamento FROM medicamento WHERE nome = '${medicamentosArray[i]}';` //Vai buscar o id dos medicamentos com base no nome dos medicamentos na receita
+      for(let i = 0; i < medicamentosArray.length -1; i++){
+        const query = "SELECT idMedicamento FROM medicamento WHERE nome = '" + medicamentosArray[i] + "';";//Vai buscar o id dos medicamentos com base no nome dos medicamentos na receita
         let check = await conn.query(query);
-        //console.log(check)
-        idsMedicamentosArray.push(check[0].idMedicamento) //adiciona os ids encontrados ao fim do array
+        console.log(check[0].idMedicamento)
+        idsMedicamentosArray.push(check[0].idMedicamento)//adiciona os ids encontrados ao fim do array
       }
 
-
-      for (let i = 0; i < idsMedicamentosArray.length; i++) {
-        const query = `SELECT primeiroLevantamento FROM receita WHERE nReceita = '${newLevantamento.numeroReceita}' AND idMedicamento = '${idsMedicamentosArray[i]}';` //Vai buscar uma lista com o estado de levatamento de cada medicamento na receita
+      for(let i = 0; i < idsMedicamentosArray.length; i++){
+        const query = `SELECT primeiroLevantamento FROM receita WHERE nReceita = ${newLevantamento.numeroReceita} AND idMedicamento = ${idsMedicamentosArray[i]};` //Vai buscar uma lista com o estado de levatamento de cada medicamento na receita
         let check = await conn.query(query);
 
-        let x = ` 
+        if(check[0].primeiroLevantamento == "t"){
+          console.log("Atualizar receita: Receita já levantada\n");
+          res.send({ mensagem: "levantado" })
+        }else{
+          let x = `
             UPDATE receita 
-            SET primeiroLevantamento = '${levantamentosArray[i]}', ultimoLevantamento = '${ultimoLevantamento}'
-            WHERE nReceita = '${newLevantamento.numeroReceita}' AND idMedicamento = '${idsMedicamentosArray[i]}';
+            SET primeiroLevantamento = 't', ultimoLevantamento = ${ultimoLevantamento}
+            WHERE nReceita = ${newLevantamento.numeroReceita} AND idMedicamento = ${idsMedicamentosArray[i]};
           `//Procura o medicamento a actualizar com base no id da receita e no id do medicamento depois actualiza o estado de cada um dos elementos da receita com base na informação recebida do backoffice.
 
-        let respo = await conn.query(x);
-        //
-        console.log(`updateReceita - Receita ${newLevantamento.numeroReceita} actualizada\n`)//Server side info
+          let respo1 = await conn.query(x);
+
+          let y = `INSERT INTO levantamentos values (NULL, ${newLevantamento.idFarmaceutico}, ${newLevantamento.numeroReceita}, ${ultimoLevantamento});`
+          let respo2 = await conn.query(y);
+          console.log(`updateReceita - Receita ${newLevantamento.numeroReceita} actualizada\n`)//Server side info
+        }
       }
+      
       res.send({ mensagem: "actualizado" });//Envia a notificação ao backoffice a informar que a actualização foi executada com sucesso
 
     } catch (err) {//Erro

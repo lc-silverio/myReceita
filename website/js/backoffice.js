@@ -262,6 +262,7 @@ function medFetchMain() {
 //Gerar Cookie para a Farmácia
 function CookieCutter(){
   bolacha = getCookieValue("id")//Guarda o id do médico numa cookie para utilizar na altura de submeter a receita
+  console.log(bolacha)
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -447,6 +448,7 @@ function levantamentoUpdate() {
 
   var counter = document.getElementById("table").rows.length; //Vai buscar  numero de linhas na receita
   counter -= 1; //ATENÇÃO RETORNA COM +1 POR CAUSA DOS HEADERS
+  console.log(bolacha)
 
   for (let i = 0; i < counter; i++) { //Uma volta por cada linha
 
