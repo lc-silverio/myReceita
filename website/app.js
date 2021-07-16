@@ -130,7 +130,7 @@ app.post('/receita', jsonParser, (req, res) => {
   async function verReceitas() {
     try {
       let conn = await pool.getConnection();
-      const selecionar = "SELECT receita.idMedicamento, receita.nReceita, receita.dataEmissao, receita.duracaoMedicamento, receita.primeiroLevantamento, receita.renova, receita.ultimoLevantamento, medicamento.nome, medicamento.formaFarmaceutica, receita.posologia, receita.quantidade, medicamento.precoMaximo FROM medicamento join receita ON receita.idMedicamento = medicamento.idMedicamento WHERE receita.cartaoUtente = " + newUser.numeroUtente + ";";
+      const selecionar = "SELECT receita.idMedicamento, receita.validadeReceita, receita.nReceita, receita.dataEmissao, receita.duracaoMedicamento, receita.primeiroLevantamento, receita.renova, receita.ultimoLevantamento, medicamento.nome, medicamento.formaFarmaceutica, receita.posologia, receita.quantidade, medicamento.precoMaximo FROM medicamento join receita ON receita.idMedicamento = medicamento.idMedicamento WHERE receita.cartaoUtente = " + newUser.numeroUtente + ";";
       let rows = await conn.query(selecionar);
       console.log("Select Executado. (1) \n");
 
@@ -174,7 +174,9 @@ app.post('/receita', jsonParser, (req, res) => {
           }
         } else {
           //Verifica se o dia atual é superior à validade da receita
+          console.log("1")
           if (seconds < rows[i].validadeReceita) {
+            console.log("2")
             //Verifica se nunca foi levantada
             if (rows[i].primeiroLevantamento === "f") {
               idString += rows[i].nReceita + "!!";
@@ -693,7 +695,7 @@ app.post('/levantamentoUpdate', jsonParser, (req, res) => {
     } catch (err) {//Erro
       console.log("updateReceita: Erro não definido\n");//Server side
       console.log(err)
-      res.send({ mensagem: "erro" })//Client
+      res.send({ mensagem: "erro" })
     }
   }
 
