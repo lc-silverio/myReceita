@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myReceita - Backoffice</title>
+    <link rel="stylesheet" href="/css/backoffice-medic.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="icon" type="image/png" href="./img/favicon.png" />
+</head>
+
+<body onload="medFetchMain()">
+    <div class=" navigation">
+        <a href="index.html"><img src="/img/logo.svg" alt="logotipo myReceita"></a>
+        <ul class="nav-list">
+            <li class="list-item">
+                <h2>myReceita - Área de Gestão Médica </h2>
+            </li>
+        </ul>
+    </div>
+
+    <section class="parent">
+        <section class="child vertical-menu">
+            <div>
+                <img src="/img/doctor2.svg" alt="">
+                <p>Saudações</p>
+                <p id="funcionarioID"></p>
+            </div>
+
+            <div>
+                <a href="mailto:suporte@myreceita.pt?subject=Erro myReceita"><button class="btn"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Comunicar Erro</button></a>
+                <button class="btn" onclick="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i> Terminar Sessão</button>
+            </div>
+        </section>
+
+        <section class="child main-menu">
+
+            <div class="identification" id="wrapper">
+                <div class="container" id="left">
+                    <div class="patient-number">
+                        <i class="fa fa-address-card-o" aria-hidden="true"></i>
+                        <input type="number" name="id-paciente" id="id-paciente" placeholder="Cartão de Utente" class="input">
+                        <button class="validar" onclick="verificarUser()">Validar</button>
+                    </div>
+
+                    <div class="patient-name">
+                        <i class="fa fa-id-card-o" aria-hidden="true"></i>
+                        <input readonly type="text" name="nome-paciente" id="nome-paciente" placeholder="-nomedepaciente-" class="input">
+                    </div>
+                </div>
+
+                <div id="right">
+
+                    <span class="renovacao">
+                        <input type="checkbox" name="auto-renov" id="auto-renov">
+                        Renovação Automática
+                    </span>
+
+                    <!--<div class="receita-number">
+                        Receita nº: <strong><span>-number-</span></strong>
+                    </div>
+                    <div class="emissao">
+                        Data de emissão: <strong><span>-data-</span></strong>
+                    </div>-->
+                </div>
+            </div>
+
+            <div class="medicine">
+                <table id="table" style="width:100%">
+                    <tr>
+                        <th>Medicamento</th>
+                        <th>Qtd</th>
+                        <th>Toma diária</th>
+                        <th>Posologia</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select class="data, medicamento-dropdown" name="medicamento-dropdown" id="medicamento-dropdown0">
+                                <option value=""></option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <input class="data, quantidade-value" type="number" name="quantidade-value" id="quantidade-value0">
+                        </td>
+
+                        <td>
+                            <input class="data, quantidade-diaria" type="number" name="quantidade-diaria" id="quantidade-diaria0">
+                        </td>
+
+                        <td>
+                            <input class="data, posologia-text"" type=" text" name="posologia-text" id="posologia-text0">
+                        </td>
+
+                        <td>
+                            <img id="clear" onclick="limparLinha(this)" src="/img/delete.svg" alt="Apagar linha">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="add"><button id="adicionar" class="adicionar" onclick="addNewLine()"><i class="fa fa-plus" aria-hidden="true" onclick="medFetch()"></i> Adiconar </button></td>
+                    </tr>
+
+                </table>
+
+                <div class="opcoes">
+                    <!-- <span class="validade" id="validade">
+                        <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
+                        Validade: <input type="date" name="validade-data" id="validade-data">
+                    </span>-->
+
+                    <span class="data-renovacao" id="data-renovacao">
+                        <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                        Renovação: <input type="date" name="data-renova" id="data-renova">
+                    </span>
+                </div>
+            </div>
+
+            <div class="commands">
+                <button class="btn" onclick="clearInput()"><i class="fa fa-times" aria-hidden="true"></i> Limpar tudo</button>
+                <button class="btn" onclick="registarReceita()"><i class="fa fa-check" aria-hidden="true"></i> Submeter</button>
+            </div>
+        </section>
+    </section>
+
+    <script src="/js/backoffice.js"></script>
+</body>
+
+</html>
